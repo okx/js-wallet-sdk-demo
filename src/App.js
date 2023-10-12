@@ -4,42 +4,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
-import Link from "@mui/material/Link";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://okx.com/">
-        OKX
-      </Link>{" "}
-      {new Date().getFullYear()}
-    </Typography>
-  );
-}
-
-function DefaultCard(props) {
-  return (
-    <Card variant="outlined" sx={{ minWidth: 275 }} {...props}>
-      <CardContent>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          Word of the Day
-        </Typography>
-      </CardContent>
-      {/* <CardActions>
-        <Button size="small">Learn More</Button>
-      </CardActions> */}
-    </Card>
-  );
-}
+import InitSDKCard from "./features/initSDK";
+import GeneratePrivateKeyCard from "./features/generatePrivateKey";
+import GenerateMnenomicCard from "./features/generateMnenomic";
 
 const defaultTheme = createTheme();
 export default function Dashboard() {
@@ -60,23 +28,20 @@ export default function Dashboard() {
           }}
         >
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Paper sx={{ p: 2 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <DefaultCard />
-                </Grid>
-                <Grid item xs={6}>
-                  <DefaultCard />
-                </Grid>
-                <Grid item xs={6}>
-                  <DefaultCard />
-                </Grid>
-                <Grid item xs={6}>
-                  <DefaultCard />
-                </Grid>
+            <Typography variant="h4" sx={{ mb: 4 }}>
+              OKX Wallet SDK Demo
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <InitSDKCard />
               </Grid>
-            </Paper>
-            <Copyright sx={{ pt: 4 }} />
+              <Grid item xs={12}>
+                <GeneratePrivateKeyCard />
+              </Grid>
+              <Grid item xs={12}>
+                <GenerateMnenomicCard />
+              </Grid>
+            </Grid>
           </Container>
         </Box>
       </Box>
