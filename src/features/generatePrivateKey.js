@@ -34,14 +34,14 @@ export default function GeneratePrivateKeyCard() {
             Generate Address
           </Button>
         </CardActions>
+        {privateKey && (
+          <Alert severity="success">
+            <AlertTitle>Success</AlertTitle>$
+            {`You have generated private key successfully - check it out! - `}
+            <strong>{`${privateKey}`}</strong>
+          </Alert>
+        )}
       </Card>
-      {privateKey && (
-        <Alert severity="success">
-          <AlertTitle>Success</AlertTitle>$
-          {`You have generated private key successfully - check it out! - `}
-          <strong>{`${privateKey}`}</strong>
-        </Alert>
-      )}
     </>
   );
 }
