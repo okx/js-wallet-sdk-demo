@@ -11,6 +11,7 @@ import {
   AlertTitle,
   Autocomplete,
   TextField,
+  Divider,
 } from "@mui/material";
 
 import { coinTypeOptions } from "../constants/coinTypeOptions";
@@ -49,7 +50,11 @@ const GeneratePrivateKeyCard = () => {
     <>
       <Card variant="outlined" sx={{ minWidth: 275, borderRadius: 5 }}>
         <CardContent sx={{ pb: 1 }}>
-          <Typography sx={{ fontSize: 14 }}>Generate Private Key</Typography>
+          <Typography sx={{ fontSize: 26 }}>Generate Private Key</Typography>
+        </CardContent>
+        <Divider flexItem />
+        <CardContent sx={{ pb: 0 }}>
+          <Typography sx={{ fontSize: 20 }}>Coin Type</Typography>
         </CardContent>
         <CardActions sx={{ pl: 2, pr: 2, pb: 2 }}>
           <Autocomplete

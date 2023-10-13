@@ -1,11 +1,12 @@
 import { observer } from "mobx-react-lite";
 
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Typography,
+} from "@mui/material";
 
 import { useStore } from "../stores";
 
@@ -23,7 +24,7 @@ const InitSDKCard = () => {
   return (
     <Card variant="outlined" sx={{ minWidth: 275, borderRadius: 5 }}>
       <CardContent sx={{ pb: 1 }}>
-        <Typography display="inline" sx={{ fontSize: 14 }}>
+        <Typography display="inline" sx={{ fontSize: 26 }}>
           OKX Wallet SDK
         </Typography>
         {isInit && (
