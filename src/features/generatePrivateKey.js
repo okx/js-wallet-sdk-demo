@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { observer } from "mobx-react-lite";
 
 import {
   Card,
@@ -12,38 +13,25 @@ import {
   TextField,
 } from "@mui/material";
 
-import { ed25519_getRandomPrivateKey } from "@okxweb3/coin-base";
+import { coinTypeOptions } from "../constants/coinTypeOptions";
+import { useStore } from "../stores";
 
-const options = [
-  { label: "BTC - Bitcoin", value: "BTC" },
-  { label: "ETH - Ethereum", value: "ETH" },
-];
-
-export default function GeneratePrivateKeyCard() {
+const GeneratePrivateKeyCard = () => {
   const [coinType, setCoinType] = useState();
-  const [privateKey, setPrivateKey] = useState();
+  const [privateKeys, setPrivateKeys] = useState([]);
+  const { walletStore } = useStore();
 
-  const generatePrivateKey = () => {
+  const generatePrivateKey = async () => {
     console.log(coinType);
     if (!coinType) {
-      setPrivateKey("");
+      setPrivateKeys(["", ...privateKeys]);
       return;
     }
-    let privateKey;
-    switch (coinType) {
-      case "BTC": {
-        privateKey = ed25519_getRandomPrivateKey(false, "hex");
-        break;
-      }
-      case "ETH": {
-        privateKey = ed25519_getRandomPrivateKey(false, "hex");
-        break;
-      }
-      default: {
-        break;
-      }
+    let wallet = walletStore.getWallet(coinType);
+    if (wallet) {
+      const privateKey = await wallet.getRandomPrivateKey();
+      setPrivateKeys([privateKey, ...privateKeys]);
     }
-    setPrivateKey(privateKey);
   };
   return (
     <>
@@ -53,7 +41,7 @@ export default function GeneratePrivateKeyCard() {
         </CardContent>
         <CardActions sx={{ pl: 2, pr: 2, pb: 2 }}>
           <Autocomplete
-            options={options}
+            options={coinTypeOptions}
             sx={{ width: 288, p: 1 }}
             renderInput={(params) => (
               <TextField {...params} label="Coin Type" />
@@ -72,20 +60,24 @@ export default function GeneratePrivateKeyCard() {
             Generate Address
           </Button>
         </CardActions>
-        {privateKey && (
-          <Alert severity="success">
-            <AlertTitle>Success</AlertTitle>$
-            {`You have generated private key successfully - check it out! - `}
-            <strong>{`${privateKey}`}</strong>
-          </Alert>
-        )}
-        {!privateKey && privateKey === "" && (
-          <Alert severity="error">
-            <AlertTitle>Failure</AlertTitle>
-            {`You have generated private key unsuccessfully - Please select a coin type beforehand!`}
-          </Alert>
-        )}
+        {privateKeys &&
+          privateKeys.map((privateKey, index) => {
+            return privateKey ? (
+              <Alert severity="success" key={index}>
+                <AlertTitle>Success</AlertTitle>
+                {`You have generated private key successfully - check it out! - `}
+                <strong>{`${privateKey}`}</strong>
+              </Alert>
+            ) : (
+              <Alert severity="error" key={index}>
+                <AlertTitle>Failure</AlertTitle>
+                {`You have generated private key unsuccessfully - Please select a coin type beforehand!`}
+              </Alert>
+            );
+          })}
       </Card>
     </>
   );
-}
+};
+
+export default observer(GeneratePrivateKeyCard);
