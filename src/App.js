@@ -1,3 +1,5 @@
+import { lazy } from "react";
+
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -5,9 +7,11 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 
-import InitSDKCard from "./features/initSDK";
-import GeneratePrivateKeyCard from "./features/generatePrivateKey";
-import GenerateMnenomicCard from "./features/generateMnenomic";
+const InitSDKCard = lazy(() => import("./features/initSDK"));
+const GeneratePrivateKeyCard = lazy(() =>
+  import("./features/generatePrivateKey")
+);
+const GenerateMnenomicCard = lazy(() => import("./features/generateMnenomic"));
 
 const defaultTheme = createTheme();
 export default function Dashboard() {
