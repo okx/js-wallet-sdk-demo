@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
 import {
@@ -20,17 +20,29 @@ const GeneratePrivateKeyCard = () => {
   const [coinType, setCoinType] = useState();
   const [privateKeys, setPrivateKeys] = useState([]);
   const { walletStore } = useStore();
+  const isInit = walletStore.isInitialized;
+
+  useEffect(() => {
+    setCoinType();
+    setPrivateKeys([]);
+  }, [isInit]);
 
   const generatePrivateKey = async () => {
     console.log(coinType);
     if (!coinType) {
-      setPrivateKeys(["", ...privateKeys]);
+      setPrivateKeys([undefined, ...privateKeys]);
       return;
     }
     let wallet = walletStore.getWallet(coinType);
     if (wallet) {
       const privateKey = await wallet.getRandomPrivateKey();
-      setPrivateKeys([privateKey, ...privateKeys]);
+      const address = await wallet.getNewAddress({ privateKey });
+      const object = {
+        network: coinType,
+        privateKey,
+        address: address.address,
+      };
+      setPrivateKeys([object, ...privateKeys]);
     }
   };
   return (
@@ -50,28 +62,33 @@ const GeneratePrivateKeyCard = () => {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
+            key={isInit}
           />
           <Button
             size="small"
             variant="contained"
             sx={{ backgroundColor: "black", borderRadius: 2 }}
             onClick={generatePrivateKey}
+            disabled={!isInit || !coinType}
           >
             Generate Address
           </Button>
         </CardActions>
         {privateKeys &&
-          privateKeys.map((privateKey, index) => {
-            return privateKey ? (
+          privateKeys.map((object, index) => {
+            return object ? (
               <Alert severity="success" key={index}>
                 <AlertTitle>Success</AlertTitle>
-                {`You have generated private key successfully - check it out! - `}
-                <strong>{`${privateKey}`}</strong>
+                <strong>{`Chain: ${object.network}`}</strong>
+                <br />
+                <strong>{`Private Key: ${object.privateKey}`}</strong>
+                <br />
+                <strong>{`Address: ${object.address}`}</strong>
               </Alert>
             ) : (
               <Alert severity="error" key={index}>
                 <AlertTitle>Failure</AlertTitle>
-                {`You have generated private key unsuccessfully - Please select a coin type beforehand!`}
+                {`Please select a coin type!`}
               </Alert>
             );
           })}

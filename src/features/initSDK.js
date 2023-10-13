@@ -23,10 +23,12 @@ const InitSDKCard = () => {
   return (
     <Card variant="outlined" sx={{ minWidth: 275, borderRadius: 5 }}>
       <CardContent sx={{ pb: 1 }}>
-        <Typography sx={{ fontSize: 14 }}>OKX Wallet SDK</Typography>
+        <Typography display="inline" sx={{ fontSize: 14 }}>
+          OKX Wallet SDK
+        </Typography>
         {isInit && (
-          <Typography sx={{ fontSize: 14, color: "blue" }}>
-            (Initialized)
+          <Typography display="inline" sx={{ fontSize: 14, color: "blue" }}>
+            {" (Initialized)"}
           </Typography>
         )}
       </CardContent>
