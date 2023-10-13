@@ -33,8 +33,12 @@ const GenerateMnenomicCard = () => {
   }, [isInit]);
 
   const genMnenomic = async () => {
-    const result = await bip39.generateMnemonic();
-    setMnenomic(result);
+    try {
+      const result = await bip39.generateMnemonic();
+      setMnenomic(result);
+    } catch (err) {
+      console.error(err);
+    }
   };
   const generatePrivateKey = async () => {
     console.log(coinType);
@@ -42,21 +46,25 @@ const GenerateMnenomicCard = () => {
       setPrivateKeys([undefined, ...privateKeys]);
       return;
     }
-    let wallet = walletStore.getWallet(coinType);
-    if (wallet) {
-      const derivedPath = await wallet.getDerivedPath({ index: 0 });
-      const privateKey = await wallet.getDerivedPrivateKey({
-        mnenomic,
-        hdPath: derivedPath,
-      });
-      const address = await wallet.getNewAddress({ privateKey });
-      const object = {
-        network: coinType,
-        derivedPath,
-        privateKey,
-        address: address.address,
-      };
-      setPrivateKeys([object, ...privateKeys]);
+    try {
+      let wallet = walletStore.getWallet(coinType);
+      if (wallet) {
+        const derivedPath = await wallet.getDerivedPath({ index: 0 });
+        const privateKey = await wallet.getDerivedPrivateKey({
+          mnenomic,
+          hdPath: derivedPath,
+        });
+        const address = await wallet.getNewAddress({ privateKey });
+        const object = {
+          network: coinType,
+          derivedPath,
+          privateKey,
+          address: address.address,
+        };
+        setPrivateKeys([object, ...privateKeys]);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
   return (
@@ -79,7 +87,7 @@ const GenerateMnenomicCard = () => {
           variant="contained"
           sx={{ backgroundColor: "black", borderRadius: 2 }}
           onClick={genMnenomic}
-          disabled={!isInit || mnenomic}
+          disabled={!isInit || !!mnenomic}
         >
           Generate Mnenomic
         </Button>
@@ -101,7 +109,7 @@ const GenerateMnenomicCard = () => {
           variant="contained"
           sx={{ backgroundColor: "black", borderRadius: 2 }}
           onClick={generatePrivateKey}
-          disabled={!isInit || !coinType}
+          disabled={!isInit || !mnenomic || !coinType}
         >
           Generate Address
         </Button>

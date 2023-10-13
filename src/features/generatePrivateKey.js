@@ -34,16 +34,20 @@ const GeneratePrivateKeyCard = () => {
       setPrivateKeys([undefined, ...privateKeys]);
       return;
     }
-    let wallet = walletStore.getWallet(coinType);
-    if (wallet) {
-      const privateKey = await wallet.getRandomPrivateKey();
-      const address = await wallet.getNewAddress({ privateKey });
-      const object = {
-        network: coinType,
-        privateKey,
-        address: address.address,
-      };
-      setPrivateKeys([object, ...privateKeys]);
+    try {
+      let wallet = walletStore.getWallet(coinType);
+      if (wallet) {
+        const privateKey = await wallet.getRandomPrivateKey();
+        const address = await wallet.getNewAddress({ privateKey });
+        const object = {
+          network: coinType,
+          privateKey,
+          address: address.address,
+        };
+        setPrivateKeys([object, ...privateKeys]);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
   return (
