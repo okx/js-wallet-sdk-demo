@@ -71,7 +71,8 @@ const GeneratePrivateKeyCard = () => {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            key={isInit}
+            key={!isInit}
+            disabled={!isInit}
           />
           <Button
             size="small"

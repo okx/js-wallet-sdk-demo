@@ -102,7 +102,8 @@ const GenerateMnenomicCard = () => {
           renderInput={(params) => <TextField {...params} label="Coin Type" />}
           onChange={(_, value) => setCoinType(value?.value)}
           isOptionEqualToValue={(option, value) => option.value === value.value}
-          key={isInit}
+          key={!isInit}
+          disabled={!isInit}
         />
         <Button
           size="small"
