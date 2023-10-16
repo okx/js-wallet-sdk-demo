@@ -64,14 +64,19 @@ const GenerateMnenomicCard = () => {
           privateKey,
           address: address.address,
         };
-        setPrivateKeys([object, ...privateKeys]);
+        if (address.publicKey) {
+          Object.assign(object, {
+            publicKey: address.publicKey,
+          });
+        }
+        setPrivateKeys([...privateKeys, object]);
       }
     } catch (err) {
       console.error(err);
       setErrorMessage(err.toString());
     }
   };
-  return (
+  return isInit ? (
     <Card variant="outlined" sx={{ minWidth: 275, borderRadius: 5 }}>
       <CardContent sx={{ pb: 1 }}>
         <Typography sx={{ fontSize: 26 }}>Generate Mnenomic</Typography>
@@ -128,20 +133,25 @@ const GenerateMnenomicCard = () => {
       {privateKeys &&
         privateKeys.map((object, index) => {
           return object ? (
-            <Alert severity="success" key={index}>
-              <AlertTitle>Success</AlertTitle>
-              <strong>{`Chain: ${object.network}`}</strong>
-              <br />
-              <strong>{`Derivation Path: ${object.derivedPath}`}</strong>
-              <br />
-              <strong>{`Private Key: ${object.privateKey}`}</strong>
-              <br />
-              <strong>{`Address: ${object.address}`}</strong>
-            </Alert>
+            <>
+              <Alert severity="success" key={index}>
+                <AlertTitle>Success</AlertTitle>
+                <strong>{`Chain: ${object.network}`}</strong>
+                <br />
+                <strong>{`Derivation Path: ${object.derivedPath}`}</strong>
+                <br />
+                <strong>{`Private Key: ${object.privateKey}`}</strong>
+                <br />
+                <strong>{`Address: ${object.address}`}</strong>
+                <br />
+                <strong>{`Public Key: ${object.publicKey}`}</strong>
+              </Alert>
+              <Divider flexItem key="divider" />
+            </>
           ) : null;
         })}
     </Card>
-  );
+  ) : null;
 };
 
 export default observer(GenerateMnenomicCard);

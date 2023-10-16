@@ -1,10 +1,10 @@
 import { makeAutoObservable } from "mobx";
 
-import { BtcWallet } from "@okxweb3/coin-bitcoin";
+import { BtcWallet, TBtcWallet } from "@okxweb3/coin-bitcoin";
 import { EthWallet } from "@okxweb3/coin-ethereum";
 import { AptosWallet } from "@okxweb3/coin-aptos";
 import { AtomWallet } from "@okxweb3/coin-cosmos";
-import { EosWallet, WaxWallet } from "@okxweb3/coin-eos";
+import { EosWallet } from "@okxweb3/coin-eos";
 import { SolWallet } from "@okxweb3/coin-solana";
 import { StxWallet } from "@okxweb3/coin-stacks";
 import { StarknetWallet } from "@okxweb3/coin-starknet";
@@ -24,11 +24,13 @@ export default class WalletStore {
 
   initialize() {
     this.btcWallet = new BtcWallet();
+    this.tbtcWallet = new TBtcWallet();
     this.ethWallet = new EthWallet();
+    this.goerliWallet = new EthWallet();
+    this.oktcWallet = new EthWallet();
     this.aptosWallet = new AptosWallet();
     this.atomWallet = new AtomWallet();
     this.eosWallet = new EosWallet();
-    this.waxWallet = new WaxWallet();
     this.solWallet = new SolWallet();
     this.stxWallet = new StxWallet();
     this.starknetWallet = new StarknetWallet();
@@ -48,8 +50,17 @@ export default class WalletStore {
       case "BTC": {
         return this.btcWallet;
       }
+      case "TBTC": {
+        return this.tbtcWallet;
+      }
       case "ETH": {
         return this.ethWallet;
+      }
+      case "GOERLI": {
+        return this.goerliWallet;
+      }
+      case "OKTC": {
+        return this.oktcWallet;
       }
       case "APTOS": {
         return this.aptosWallet;
@@ -59,9 +70,6 @@ export default class WalletStore {
       }
       case "EOS": {
         return this.eosWallet;
-      }
-      case "WAX": {
-        return this.waxWallet;
       }
       case "SOL": {
         return this.solWallet;

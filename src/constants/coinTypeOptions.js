@@ -1,10 +1,12 @@
 const coinTypeOptions = [
   { label: "BTC - Bitcoin", value: "BTC" },
+  { label: "TBTC - Bitcoin", value: "TBTC" },
   { label: "ETH - Ethereum", value: "ETH" },
+  { label: "ETH - Goerli", value: "GOERLI" },
+  { label: "ETH - OKTC", value: "OKTC" },
   { label: "APTOS - Aptos", value: "APTOS" },
   { label: "ATOM - Cosmos", value: "ATOM" },
   { label: "EOS - EOS", value: "EOS" },
-  { label: "WAX - EOS", value: "WAX" },
   { label: "SOL - Solana", value: "SOL" },
   { label: "STX - Stacks", value: "STX" },
   { label: "STARK - Starknet", value: "STARK" },
