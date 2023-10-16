@@ -14,7 +14,7 @@ const InitSDKCard = () => {
 
   // mobx store that link up with sdk wallets
   const { walletStore } = useStore();
-  const isInit = walletStore.isInitialized;
+  const isInit = walletStore.isInit;
 
   // local UI state cleanup when sdk re-initialized
   useEffect(() => {

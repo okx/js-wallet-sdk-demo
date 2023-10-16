@@ -7,13 +7,11 @@ import {
   Typography,
   Alert,
   AlertTitle,
-  Autocomplete,
-  TextField,
   Divider,
 } from "@mui/material";
 
-import { coinTypeOptions } from "../constants/coinTypeOptions";
 import { CardActionButton } from "../components/CardActionButton";
+import { DemoAutocomplete } from "../components/DemoAutocomplete";
 import { DemoDialog } from "../components/DemoDialog";
 import { DemoWalletInfo } from "../components/DemoWalletInfo";
 import { useStore } from "../stores";
@@ -28,7 +26,7 @@ const GeneratePrivateKeyCard = () => {
 
   // mobx store that link up with sdk wallets
   const { walletStore } = useStore();
-  const isInit = walletStore.isInitialized;
+  const isInit = walletStore.isInit;
 
   // local UI state cleanup when sdk re-initialized
   useEffect(() => {
@@ -92,19 +90,7 @@ const GeneratePrivateKeyCard = () => {
           <Typography sx={{ fontSize: 20 }}>Coin Type</Typography>
         </CardContent>
         <CardActions sx={{ pl: 2, pr: 2, pb: 2 }}>
-          <Autocomplete
-            options={coinTypeOptions}
-            sx={{ width: 288, p: 1 }}
-            renderInput={(params) => (
-              <TextField {...params} label="Coin Type" />
-            )}
-            onChange={(_, value) => setCoinType(value?.value)}
-            isOptionEqualToValue={(option, value) =>
-              option.value === value.value
-            }
-            key={!isInit}
-            disabled={!isInit}
-          />
+          <DemoAutocomplete setCoinType={setCoinType} />
           <CardActionButton
             buttonText="Generate Address"
             handleClick={generatePrivateKey}
