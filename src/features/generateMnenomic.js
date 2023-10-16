@@ -22,7 +22,7 @@ import { useStore } from "../stores";
 const GenerateMnenomicCard = () => {
   const [coinType, setCoinType] = useState();
   const [mnenomic, setMnenomic] = useState();
-  const [privateKeys, setPrivateKeys] = useState([]);
+  const [walletInfos, setWalletInfos] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const { walletStore } = useStore();
   const isInit = walletStore.isInitialized;
@@ -30,7 +30,7 @@ const GenerateMnenomicCard = () => {
   useEffect(() => {
     setCoinType();
     setMnenomic();
-    setPrivateKeys([]);
+    setWalletInfos([]);
     setErrorMessage("");
   }, [isInit]);
 
@@ -43,7 +43,6 @@ const GenerateMnenomicCard = () => {
     }
   };
   const generatePrivateKey = async () => {
-    console.log(coinType);
     if (!coinType) {
       setErrorMessage("Please select a coin type!");
       return;
@@ -58,18 +57,18 @@ const GenerateMnenomicCard = () => {
           hdPath: derivedPath,
         });
         const address = await wallet.getNewAddress({ privateKey });
-        const object = {
+        const walletInfo = {
           network: coinType,
           derivedPath,
           privateKey,
           address: address.address,
         };
         if (address.publicKey) {
-          Object.assign(object, {
+          Object.assign(walletInfo, {
             publicKey: address.publicKey,
           });
         }
-        setPrivateKeys([...privateKeys, object]);
+        setWalletInfos([...walletInfos, walletInfo]);
       }
     } catch (err) {
       console.error(err);
@@ -130,21 +129,21 @@ const GenerateMnenomicCard = () => {
           {errorMessage}
         </Alert>
       )}
-      {privateKeys &&
-        privateKeys.map((object, index) => {
-          return object ? (
+      {walletInfos &&
+        walletInfos.map((walletInfo, index) => {
+          return walletInfo ? (
             <>
               <Alert severity="success" key={index}>
                 <AlertTitle>Success</AlertTitle>
-                <strong>{`Chain: ${object.network}`}</strong>
+                <strong>{`Chain: ${walletInfo.network}`}</strong>
                 <br />
-                <strong>{`Derivation Path: ${object.derivedPath}`}</strong>
+                <strong>{`Derivation Path: ${walletInfo.derivedPath}`}</strong>
                 <br />
-                <strong>{`Private Key: ${object.privateKey}`}</strong>
+                <strong>{`Private Key: ${walletInfo.privateKey}`}</strong>
                 <br />
-                <strong>{`Address: ${object.address}`}</strong>
+                <strong>{`Address: ${walletInfo.address}`}</strong>
                 <br />
-                <strong>{`Public Key: ${object.publicKey}`}</strong>
+                <strong>{`Public Key: ${walletInfo.publicKey}`}</strong>
               </Alert>
               <Divider flexItem key="divider" />
             </>
