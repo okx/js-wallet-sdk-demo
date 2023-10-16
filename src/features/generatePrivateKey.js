@@ -12,6 +12,11 @@ import {
   Autocomplete,
   TextField,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 
 import { coinTypeOptions } from "../constants/coinTypeOptions";
@@ -21,6 +26,8 @@ const GeneratePrivateKeyCard = () => {
   const [coinType, setCoinType] = useState();
   const [walletInfos, setWalletInfos] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showDialog, setShowDialog] = useState(false);
+
   const { walletStore } = useStore();
   const isInit = walletStore.isInitialized;
 
@@ -28,11 +35,22 @@ const GeneratePrivateKeyCard = () => {
     setCoinType();
     setWalletInfos([]);
     setErrorMessage("");
+    setShowDialog(false);
   }, [isInit]);
 
+  const confirmDialog = () => {
+    setShowDialog(false);
+  };
   const generatePrivateKey = async () => {
     if (!coinType) {
       setErrorMessage("Please select a coin type!");
+      return;
+    }
+    if (
+      walletInfos.findIndex((walletInfo) => walletInfo.coinType === coinType) >
+      -1
+    ) {
+      setShowDialog(true);
       return;
     }
     try {
@@ -42,7 +60,7 @@ const GeneratePrivateKeyCard = () => {
         const privateKey = await wallet.getRandomPrivateKey();
         const address = await wallet.getNewAddress({ privateKey });
         const walletInfo = {
-          network: coinType,
+          coinType,
           privateKey,
           address: address.address,
         };
@@ -104,7 +122,7 @@ const GeneratePrivateKeyCard = () => {
               <>
                 <Alert severity="success" key={index}>
                   <AlertTitle>Success</AlertTitle>
-                  <strong>{`Chain: ${walletInfo.network}`}</strong>
+                  <strong>{`Chain: ${walletInfo.coinType}`}</strong>
                   <br />
                   <strong>{`Private Key: ${walletInfo.privateKey}`}</strong>
                   <br />
@@ -117,6 +135,24 @@ const GeneratePrivateKeyCard = () => {
             ) : null;
           })}
       </Card>
+      <Dialog
+        open={showDialog}
+        onClose={confirmDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Already created</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            The Private Key is already created, please try other coin types!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={confirmDialog} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   ) : null;
 };
