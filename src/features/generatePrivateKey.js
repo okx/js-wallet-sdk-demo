@@ -20,21 +20,24 @@ import { useStore } from "../stores";
 const GeneratePrivateKeyCard = () => {
   const [coinType, setCoinType] = useState();
   const [privateKeys, setPrivateKeys] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const { walletStore } = useStore();
   const isInit = walletStore.isInitialized;
 
   useEffect(() => {
     setCoinType();
     setPrivateKeys([]);
+    setErrorMessage("");
   }, [isInit]);
 
   const generatePrivateKey = async () => {
     console.log(coinType);
     if (!coinType) {
-      setPrivateKeys([undefined, ...privateKeys]);
+      setErrorMessage("Please select a coin type!");
       return;
     }
     try {
+      setErrorMessage("");
       let wallet = walletStore.getWallet(coinType);
       if (wallet) {
         const privateKey = await wallet.getRandomPrivateKey();
@@ -48,6 +51,7 @@ const GeneratePrivateKeyCard = () => {
       }
     } catch (err) {
       console.error(err);
+      setErrorMessage(err.toString());
     }
   };
   return (
@@ -84,6 +88,12 @@ const GeneratePrivateKeyCard = () => {
             Generate Address
           </Button>
         </CardActions>
+        {errorMessage && (
+          <Alert severity="error">
+            <AlertTitle>Failure</AlertTitle>
+            {errorMessage}
+          </Alert>
+        )}
         {privateKeys &&
           privateKeys.map((object, index) => {
             return object ? (
@@ -95,12 +105,7 @@ const GeneratePrivateKeyCard = () => {
                 <br />
                 <strong>{`Address: ${object.address}`}</strong>
               </Alert>
-            ) : (
-              <Alert severity="error" key={index}>
-                <AlertTitle>Failure</AlertTitle>
-                {`Please select a coin type!`}
-              </Alert>
-            );
+            ) : null;
           })}
       </Card>
     </>

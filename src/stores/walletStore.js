@@ -3,7 +3,7 @@ import { makeAutoObservable } from "mobx";
 import { BtcWallet } from "@okxweb3/coin-bitcoin";
 import { EthWallet } from "@okxweb3/coin-ethereum";
 import { AptosWallet } from "@okxweb3/coin-aptos";
-import { CosmosWallet } from "@okxweb3/coin-cosmos";
+import { AtomWallet } from "@okxweb3/coin-cosmos";
 import { EosWallet, WaxWallet } from "@okxweb3/coin-eos";
 import { SolWallet } from "@okxweb3/coin-solana";
 import { StxWallet } from "@okxweb3/coin-stacks";
@@ -14,21 +14,6 @@ import { ZkspaceWallet, ZksyncWallet } from "@okxweb3/coin-zkspace";
 
 export default class WalletStore {
   rootStore;
-
-  btcWallet;
-  ethWallet;
-  aptosWallet;
-  cosmosWallet;
-  eosWallet;
-  waxWallet;
-  solWallet;
-  stxWallet;
-  starknetWallet;
-  suiWallet;
-  trxWallet;
-  zkSpaceWallet;
-  zkSyncWallet;
-
   isInit = false;
 
   constructor(rootStore) {
@@ -41,7 +26,7 @@ export default class WalletStore {
     this.btcWallet = new BtcWallet();
     this.ethWallet = new EthWallet();
     this.aptosWallet = new AptosWallet();
-    this.cosmosWallet = new CosmosWallet();
+    this.atomWallet = new AtomWallet();
     this.eosWallet = new EosWallet();
     this.waxWallet = new WaxWallet();
     this.solWallet = new SolWallet();
@@ -69,8 +54,8 @@ export default class WalletStore {
       case "APTOS": {
         return this.aptosWallet;
       }
-      case "COSMOS": {
-        return this.cosmosWallet;
+      case "ATOM": {
+        return this.atomWallet;
       }
       case "EOS": {
         return this.eosWallet;

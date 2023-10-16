@@ -23,6 +23,7 @@ const GenerateMnenomicCard = () => {
   const [coinType, setCoinType] = useState();
   const [mnenomic, setMnenomic] = useState();
   const [privateKeys, setPrivateKeys] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const { walletStore } = useStore();
   const isInit = walletStore.isInitialized;
 
@@ -30,6 +31,7 @@ const GenerateMnenomicCard = () => {
     setCoinType();
     setMnenomic();
     setPrivateKeys([]);
+    setErrorMessage("");
   }, [isInit]);
 
   const genMnenomic = async () => {
@@ -43,10 +45,11 @@ const GenerateMnenomicCard = () => {
   const generatePrivateKey = async () => {
     console.log(coinType);
     if (!coinType) {
-      setPrivateKeys([undefined, ...privateKeys]);
+      setErrorMessage("Please select a coin type!");
       return;
     }
     try {
+      setErrorMessage("");
       let wallet = walletStore.getWallet(coinType);
       if (wallet) {
         const derivedPath = await wallet.getDerivedPath({ index: 0 });
@@ -65,6 +68,7 @@ const GenerateMnenomicCard = () => {
       }
     } catch (err) {
       console.error(err);
+      setErrorMessage(err.toString());
     }
   };
   return (
@@ -115,6 +119,12 @@ const GenerateMnenomicCard = () => {
           Generate Address
         </Button>
       </CardActions>
+      {errorMessage && (
+        <Alert severity="error">
+          <AlertTitle>Failure</AlertTitle>
+          {errorMessage}
+        </Alert>
+      )}
       {privateKeys &&
         privateKeys.map((object, index) => {
           return object ? (
@@ -128,12 +138,7 @@ const GenerateMnenomicCard = () => {
               <br />
               <strong>{`Address: ${object.address}`}</strong>
             </Alert>
-          ) : (
-            <Alert severity="error" key={index}>
-              <AlertTitle>Failure</AlertTitle>
-              {`Please select a coin type!`}
-            </Alert>
-          );
+          ) : null;
         })}
     </Card>
   );
