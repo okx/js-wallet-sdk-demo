@@ -153,7 +153,7 @@ const GenerateMnenomicCard = () => {
                 onClick={generatePrivateKey}
                 disabled={!isInit || !mnenomic || !coinType}
               >
-                Generate Address
+                Derive Address
               </Button>
             </CardActions>
             {errorMessage && (
