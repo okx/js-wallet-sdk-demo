@@ -1,36 +1,36 @@
 import { useState, useEffect } from "react";
 import { observer } from "mobx-react-lite";
-
 import {
   Card,
   CardContent,
   CardActions,
-  Button,
   Typography,
   Alert,
   AlertTitle,
   Autocomplete,
   TextField,
   Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
 } from "@mui/material";
 
 import { coinTypeOptions } from "../constants/coinTypeOptions";
+import { CardActionButton } from "../components/CardActionButton";
+import { DemoDialog } from "../components/DemoDialog";
+import { DemoWalletInfo } from "../components/DemoWalletInfo";
 import { useStore } from "../stores";
 
+// card per feature
 const GeneratePrivateKeyCard = () => {
+  // local UI state
   const [coinType, setCoinType] = useState();
   const [walletInfos, setWalletInfos] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [showDialog, setShowDialog] = useState(false);
 
+  // mobx store that link up with sdk wallets
   const { walletStore } = useStore();
   const isInit = walletStore.isInitialized;
 
+  // local UI state cleanup when sdk re-initialized
   useEffect(() => {
     setCoinType();
     setWalletInfos([]);
@@ -38,9 +38,12 @@ const GeneratePrivateKeyCard = () => {
     setShowDialog(false);
   }, [isInit]);
 
-  const confirmDialog = () => {
+  // event handler
+  const handleDialogClose = () => {
     setShowDialog(false);
   };
+
+  // feature logic
   const generatePrivateKey = async () => {
     if (!coinType) {
       setErrorMessage("Please select a coin type!");
@@ -76,6 +79,8 @@ const GeneratePrivateKeyCard = () => {
       setErrorMessage(err.toString());
     }
   };
+
+  // render logic
   return isInit ? (
     <>
       <Card variant="outlined" sx={{ minWidth: 275, borderRadius: 5 }}>
@@ -100,15 +105,11 @@ const GeneratePrivateKeyCard = () => {
             key={!isInit}
             disabled={!isInit}
           />
-          <Button
-            size="small"
-            variant="contained"
-            sx={{ backgroundColor: "black", borderRadius: 2 }}
-            onClick={generatePrivateKey}
+          <CardActionButton
+            buttonText="Generate Address"
+            handleClick={generatePrivateKey}
             disabled={!isInit || !coinType}
-          >
-            Generate Address
-          </Button>
+          />
         </CardActions>
         {errorMessage && (
           <Alert severity="error">
@@ -119,40 +120,18 @@ const GeneratePrivateKeyCard = () => {
         {walletInfos &&
           walletInfos.map((walletInfo, index) => {
             return walletInfo ? (
-              <>
-                <Alert severity="success" key={index}>
-                  <AlertTitle>Success</AlertTitle>
-                  <strong>{`Chain: ${walletInfo.coinType}`}</strong>
-                  <br />
-                  <strong>{`Private Key: ${walletInfo.privateKey}`}</strong>
-                  <br />
-                  <strong>{`Address: ${walletInfo.address}`}</strong>
-                  <br />
-                  <strong>{`Public Key: ${walletInfo.publicKey}`}</strong>
-                </Alert>
-                <Divider flexItem key="divider" />
-              </>
+              <DemoWalletInfo walletInfo={walletInfo} index={index} />
             ) : null;
           })}
       </Card>
-      <Dialog
-        open={showDialog}
-        onClose={confirmDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Already created</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            The Private Key is already created, please try other coin types!
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={confirmDialog} autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DemoDialog
+        title={"Already created"}
+        content={
+          "The Private Key is already created, please try other coin types!"
+        }
+        showDialog={showDialog}
+        handleConfirm={handleDialogClose}
+      />
     </>
   ) : null;
 };

@@ -5,35 +5,35 @@ import {
   Card,
   CardContent,
   CardActions,
-  Button,
   Typography,
   Alert,
   AlertTitle,
   Autocomplete,
   TextField,
   Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
 } from "@mui/material";
-
 import { bip39 } from "@okxweb3/crypto-lib";
 
 import { coinTypeOptions } from "../constants/coinTypeOptions";
+import { CardActionButton } from "../components/CardActionButton";
+import { DemoDialog } from "../components/DemoDialog";
+import { DemoWalletInfo } from "../components/DemoWalletInfo";
 import { useStore } from "../stores";
 
+// card per feature
 const GenerateMnenomicCard = () => {
+  // local UI state
   const [coinType, setCoinType] = useState();
   const [mnenomic, setMnenomic] = useState();
   const [walletInfos, setWalletInfos] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [showDialog, setShowDialog] = useState(false);
 
+  // mobx store that link up with sdk wallets
   const { walletStore } = useStore();
   const isInit = walletStore.isInitialized;
 
+  // local UI state cleanup when sdk re-initialized
   useEffect(() => {
     setCoinType();
     setMnenomic();
@@ -42,9 +42,12 @@ const GenerateMnenomicCard = () => {
     setShowDialog(false);
   }, [isInit]);
 
-  const confirmDialog = () => {
+  // event handler
+  const handleDialogClose = () => {
     setShowDialog(false);
   };
+
+  // feature logic
   const generateMnenomic = async () => {
     try {
       const result = await bip39.generateMnemonic();
@@ -93,6 +96,8 @@ const GenerateMnenomicCard = () => {
       setErrorMessage(err.toString());
     }
   };
+
+  // render logic
   return isInit ? (
     <>
       <Card variant="outlined" sx={{ minWidth: 275, borderRadius: 5 }}>
@@ -117,15 +122,11 @@ const GenerateMnenomicCard = () => {
           </Typography>
         </CardContent>
         <CardActions sx={{ p: 2 }}>
-          <Button
-            size="small"
-            variant="contained"
-            sx={{ backgroundColor: "black", borderRadius: 2 }}
-            onClick={generateMnenomic}
+          <CardActionButton
+            buttonText="Generate Mnenomic"
+            handleClick={generateMnenomic}
             disabled={!isInit || !!mnenomic}
-          >
-            Generate Mnenomic
-          </Button>
+          />
         </CardActions>
         {!!mnenomic && (
           <>
@@ -146,15 +147,11 @@ const GenerateMnenomicCard = () => {
                 key={!isInit}
                 disabled={!isInit}
               />
-              <Button
-                size="small"
-                variant="contained"
-                sx={{ backgroundColor: "black", borderRadius: 2 }}
-                onClick={generatePrivateKey}
+              <CardActionButton
+                buttonText="Derive Address"
+                handleClick={generatePrivateKey}
                 disabled={!isInit || !mnenomic || !coinType}
-              >
-                Derive Address
-              </Button>
+              />
             </CardActions>
             {errorMessage && (
               <Alert severity="error">
@@ -165,44 +162,20 @@ const GenerateMnenomicCard = () => {
             {walletInfos &&
               walletInfos.map((walletInfo, index) => {
                 return walletInfo ? (
-                  <>
-                    <Alert severity="success" key={index}>
-                      <AlertTitle>Success</AlertTitle>
-                      <strong>{`Chain: ${walletInfo.coinType}`}</strong>
-                      <br />
-                      <strong>{`Derivation Path: ${walletInfo.derivedPath}`}</strong>
-                      <br />
-                      <strong>{`Private Key: ${walletInfo.privateKey}`}</strong>
-                      <br />
-                      <strong>{`Address: ${walletInfo.address}`}</strong>
-                      <br />
-                      <strong>{`Public Key: ${walletInfo.publicKey}`}</strong>
-                    </Alert>
-                    <Divider flexItem key="divider" />
-                  </>
+                  <DemoWalletInfo walletInfo={walletInfo} index={index} />
                 ) : null;
               })}
           </>
         )}
       </Card>
-      <Dialog
-        open={showDialog}
-        onClose={confirmDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Already created</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            The Private Key is already created, please try other coin types!
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={confirmDialog} autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DemoDialog
+        title={"Already created"}
+        content={
+          "The Private Key is already created, please try other coin types!"
+        }
+        showDialog={showDialog}
+        handleConfirm={handleDialogClose}
+      ></DemoDialog>
     </>
   ) : null;
 };

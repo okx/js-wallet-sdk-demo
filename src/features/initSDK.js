@@ -1,37 +1,27 @@
 import { useState, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
-import {
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-} from "@mui/material";
+import { Card, CardContent, CardActions, Typography } from "@mui/material";
 
+import { CardActionButton } from "../components/CardActionButton";
+import { DemoDialog } from "../components/DemoDialog";
 import { useStore } from "../stores";
 
+// card per feature
 const InitSDKCard = () => {
+  // local UI state
   const [showDialog, setShowDialog] = useState(false);
 
+  // mobx store that link up with sdk wallets
   const { walletStore } = useStore();
   const isInit = walletStore.isInitialized;
 
+  // local UI state cleanup when sdk re-initialized
   useEffect(() => {
     setShowDialog(false);
   }, [isInit]);
 
-  const initSDK = () => {
-    walletStore.initialize();
-  };
-  const dispose = () => {
-    setShowDialog(true);
-  };
+  // event handler
   const confirmDialog = () => {
     walletStore.dispose();
     setShowDialog(false);
@@ -39,6 +29,16 @@ const InitSDKCard = () => {
   const closeDialog = () => {
     setShowDialog(false);
   };
+
+  // feature logic
+  const initSDK = () => {
+    walletStore.initialize();
+  };
+  const dispose = () => {
+    setShowDialog(true);
+  };
+
+  // render logic
   return (
     <>
       <Card variant="outlined" sx={{ minWidth: 275, borderRadius: 5 }}>
@@ -53,47 +53,20 @@ const InitSDKCard = () => {
           )}
         </CardContent>
         <CardActions sx={{ pl: 2, pr: 2, pb: 2 }}>
-          {!isInit && (
-            <Button
-              size="small"
-              variant="contained"
-              sx={{ backgroundColor: "black", borderRadius: 2 }}
-              onClick={initSDK}
-            >
-              Initialize
-            </Button>
-          )}
-          {isInit && (
-            <Button
-              size="small"
-              variant="contained"
-              sx={{ backgroundColor: "black", borderRadius: 2 }}
-              onClick={dispose}
-            >
-              Dispose
-            </Button>
+          {!isInit ? (
+            <CardActionButton buttonText="Initialize" handleClick={initSDK} />
+          ) : (
+            <CardActionButton buttonText="Dispose" handleClick={dispose} />
           )}
         </CardActions>
       </Card>
-      <Dialog
-        open={showDialog}
-        onClose={closeDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            The Mnenomics and Private Keys generated will be lost!
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDialog}>No</Button>
-          <Button onClick={confirmDialog} autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DemoDialog
+        title={"Are you sure?"}
+        content={"The Mnenomics and Private Keys generated will be lost!"}
+        showDialog={showDialog}
+        handleClose={closeDialog}
+        handleConfirm={confirmDialog}
+      />
     </>
   );
 };
