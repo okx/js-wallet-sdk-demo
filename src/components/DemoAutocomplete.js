@@ -20,6 +20,7 @@ const DemoAutocomplete = ({ setCoinType }) => {
       onChange={(_, value) => setCoinType(value?.value)}
       isOptionEqualToValue={(option, value) => option.value === value.value}
       // groupBy={(option) => option.network}
+      data-testid="autocomplete"
     />
   );
 };

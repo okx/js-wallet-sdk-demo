@@ -81,7 +81,11 @@ const GeneratePrivateKeyCard = () => {
   // render logic
   return isInit ? (
     <>
-      <Card variant="outlined" sx={{ minWidth: 275, borderRadius: 5 }}>
+      <Card
+        variant="outlined"
+        sx={{ minWidth: 275, borderRadius: 5 }}
+        key="generate-private-key-card"
+      >
         <CardContent sx={{ pb: 1 }}>
           <Typography sx={{ fontSize: 26 }}>Generate Private Key</Typography>
         </CardContent>
@@ -95,6 +99,7 @@ const GeneratePrivateKeyCard = () => {
             buttonText="Generate Address"
             handleClick={generatePrivateKey}
             disabled={!isInit || !coinType}
+            testId="generate-address"
           />
         </CardActions>
         {errorMessage && (

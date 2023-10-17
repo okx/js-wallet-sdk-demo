@@ -3,7 +3,11 @@ import { Alert, AlertTitle, Divider } from "@mui/material";
 const DemoWalletInfo = ({ walletInfo, index }) => {
   return (
     <>
-      <Alert severity="success" key={`wallet-info-${index}`}>
+      <Alert
+        severity="success"
+        key={`wallet-info-${index}`}
+        data-testid={`wallet-info-${index}`}
+      >
         <AlertTitle>Success</AlertTitle>
         {walletInfo.coinType && (
           <strong>{`Chain: ${walletInfo.coinType}`}</strong>

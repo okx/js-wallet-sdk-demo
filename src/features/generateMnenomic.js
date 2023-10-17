@@ -98,7 +98,11 @@ const GenerateMnenomicCard = () => {
   // render logic
   return isInit ? (
     <>
-      <Card variant="outlined" sx={{ minWidth: 275, borderRadius: 5 }}>
+      <Card
+        variant="outlined"
+        sx={{ minWidth: 275, borderRadius: 5 }}
+        key="generate-mnenomic-card"
+      >
         <CardContent sx={{ pb: 1 }}>
           <Typography sx={{ fontSize: 26 }}>Generate Mnenomic</Typography>
         </CardContent>
@@ -124,6 +128,7 @@ const GenerateMnenomicCard = () => {
             buttonText="Generate Mnenomic"
             handleClick={generateMnenomic}
             disabled={!isInit || !!mnenomic}
+            testId="generate-mnenomic"
           />
         </CardActions>
         {!!mnenomic && (
@@ -137,6 +142,7 @@ const GenerateMnenomicCard = () => {
                 buttonText="Derive Address"
                 handleClick={generatePrivateKey}
                 disabled={!isInit || !mnenomic || !coinType}
+                testId="derive-address"
               />
             </CardActions>
             {errorMessage && (
