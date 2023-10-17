@@ -16,7 +16,7 @@
     "@okxweb3/coin-solana": "^1.0.0",
     "@okxweb3/coin-stacks": "^1.0.0",
     "@okxweb3/coin-starknet": "^1.0.0",
-    "@okxweb3/coin-sui": "^1.0.0",
+    "@okxweb3/coin-sui": "^1.0.1",
     "@okxweb3/coin-tron": "^1.0.0",
     "@okxweb3/coin-zkspace": "^1.0.0",
     "@okxweb3/crypto-lib": "^1.0.0",
