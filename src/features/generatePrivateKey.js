@@ -70,7 +70,7 @@ const GeneratePrivateKeyCard = () => {
             publicKey: address.publicKey,
           });
         }
-        setWalletInfos([...walletInfos, walletInfo]);
+        setWalletInfos([walletInfo, ...walletInfos]);
       }
     } catch (err) {
       console.error(err);
