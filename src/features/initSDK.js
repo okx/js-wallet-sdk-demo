@@ -59,17 +59,17 @@ const InitSDKCard = () => {
           {!isInit ? (
             <CardActionButton
               buttonText="Initialize"
-              handleClick={initSDK}
+              onClick={initSDK}
               testId="initialize"
             />
           ) : (
             <CardActionButton
               buttonText="Dispose"
-              handleClick={dispose}
+              onClick={dispose}
               testId="dispose"
             />
           )}
-          <CardActionButton buttonText="Github" handleClick={linkToGithub} />
+          <CardActionButton buttonText="Github" onClick={linkToGithub} />
         </CardActions>
       </Card>
       <DemoDialog

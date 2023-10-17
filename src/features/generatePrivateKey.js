@@ -13,7 +13,7 @@ import {
 import { CardActionButton } from "../components/CardActionButton";
 import { DemoAutocomplete } from "../components/DemoAutocomplete";
 import { DemoDialog } from "../components/DemoDialog";
-import { DemoWalletInfo } from "../components/DemoWalletInfo";
+import DemoWalletInfo from "../components/DemoWalletInfo";
 import { useStore } from "../stores";
 
 // card per feature
@@ -77,6 +77,9 @@ const GeneratePrivateKeyCard = () => {
       setErrorMessage(err.toString());
     }
   };
+  const deletePrivateKey = (index) => {
+    setWalletInfos(walletInfos.toSpliced(index, 1));
+  };
 
   // render logic
   return isInit ? (
@@ -97,7 +100,7 @@ const GeneratePrivateKeyCard = () => {
           <DemoAutocomplete setCoinType={setCoinType} />
           <CardActionButton
             buttonText="Generate Address"
-            handleClick={generatePrivateKey}
+            onClick={generatePrivateKey}
             disabled={!isInit || !coinType}
             testId="generate-address"
           />
@@ -111,7 +114,11 @@ const GeneratePrivateKeyCard = () => {
         {walletInfos &&
           walletInfos.map((walletInfo, index) => {
             return walletInfo ? (
-              <DemoWalletInfo walletInfo={walletInfo} index={index} />
+              <DemoWalletInfo
+                walletInfo={walletInfo}
+                index={index}
+                callback={deletePrivateKey}
+              />
             ) : null;
           })}
       </Card>

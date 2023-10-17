@@ -1,6 +1,23 @@
-import { Alert, AlertTitle, Divider } from "@mui/material";
+import { Grid, Alert, AlertTitle, Divider, IconButton } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const DemoWalletInfo = ({ walletInfo, index }) => {
+import "./DemoWalletInfo.css";
+import { useStore } from "../stores";
+import { observer } from "mobx-react-lite";
+
+const contentCopy = (walletInfo, appStore) => {
+  navigator.clipboard.writeText(JSON.stringify(walletInfo));
+  appStore.snackBarMessage = "Copied to clipboard";
+  appStore.openSnackBar = true;
+};
+const deleteWalletInfo = (callback, appStore) => {
+  appStore.snackBarMessage = "Address deleted";
+  appStore.openSnackBar = true;
+  callback();
+};
+const DemoWalletInfo = ({ walletInfo, index, callback }) => {
+  const { appStore } = useStore();
   return (
     <>
       <Alert
@@ -8,7 +25,25 @@ const DemoWalletInfo = ({ walletInfo, index }) => {
         key={`wallet-info-${index}`}
         data-testid={`wallet-info-${index}`}
       >
-        <AlertTitle>Success</AlertTitle>
+        <Grid container spacing={2}>
+          <Grid item xs>
+            <AlertTitle>Success</AlertTitle>
+          </Grid>
+          <Grid item>
+            <IconButton>
+              <ContentCopyIcon
+                size="small"
+                onClick={() => contentCopy(walletInfo, appStore)}
+              />
+            </IconButton>
+            <IconButton>
+              <DeleteIcon
+                size="small"
+                onClick={() => deleteWalletInfo(callback, appStore)}
+              />
+            </IconButton>
+          </Grid>
+        </Grid>
         {walletInfo.coinType && (
           <strong>{`Chain: ${walletInfo.coinType}`}</strong>
         )}
@@ -42,4 +77,4 @@ const DemoWalletInfo = ({ walletInfo, index }) => {
   );
 };
 
-export { DemoWalletInfo };
+export default observer(DemoWalletInfo);

@@ -9,13 +9,16 @@ import {
   Alert,
   AlertTitle,
   Divider,
+  Grid,
+  IconButton,
 } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { bip39 } from "@okxweb3/crypto-lib";
 
 import { CardActionButton } from "../components/CardActionButton";
 import { DemoAutocomplete } from "../components/DemoAutocomplete";
 import { DemoDialog } from "../components/DemoDialog";
-import { DemoWalletInfo } from "../components/DemoWalletInfo";
+import DemoWalletInfo from "../components/DemoWalletInfo";
 import { useStore } from "../stores";
 
 // card per feature
@@ -28,7 +31,7 @@ const GenerateMnenomicCard = () => {
   const [showDialog, setShowDialog] = useState(false);
 
   // mobx store that link up with sdk wallets
-  const { walletStore } = useStore();
+  const { walletStore, appStore } = useStore();
   const isInit = walletStore.isInit;
 
   // local UI state cleanup when sdk re-initialized
@@ -43,6 +46,11 @@ const GenerateMnenomicCard = () => {
   // event handler
   const handleDialogClose = () => {
     setShowDialog(false);
+  };
+  const contentCopy = (mnenomic, appStore) => {
+    navigator.clipboard.writeText(mnenomic);
+    appStore.snackBarMessage = "Copied to clipboard";
+    appStore.openSnackBar = true;
   };
 
   // feature logic
@@ -94,6 +102,9 @@ const GenerateMnenomicCard = () => {
       setErrorMessage(err.toString());
     }
   };
+  const deletePrivateKey = (index) => {
+    setWalletInfos(walletInfos.toSpliced(index, 1));
+  };
 
   // render logic
   return isInit ? (
@@ -119,14 +130,36 @@ const GenerateMnenomicCard = () => {
             backgroundColor: "#f7f7f7",
           }}
         >
-          <Typography sx={{ minHeight: 24, fontSize: 20 }}>
-            {mnenomic}
-          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs>
+              {mnenomic ? (
+                <Typography sx={{ minHeight: 24, fontSize: 20 }}>
+                  {mnenomic}
+                </Typography>
+              ) : (
+                <Typography
+                  sx={{ minHeight: 24, fontSize: 16, color: "#929292" }}
+                >
+                  {`Click "Generate Mnenomic" to randomly generate mnenomic`}
+                </Typography>
+              )}
+            </Grid>
+            <Grid item>
+              {mnenomic ? (
+                <IconButton>
+                  <ContentCopyIcon
+                    size="small"
+                    onClick={() => contentCopy(mnenomic, appStore)}
+                  />
+                </IconButton>
+              ) : null}
+            </Grid>
+          </Grid>
         </CardContent>
         <CardActions sx={{ p: 2 }}>
           <CardActionButton
             buttonText="Generate Mnenomic"
-            handleClick={generateMnenomic}
+            onClick={generateMnenomic}
             disabled={!isInit || !!mnenomic}
             testId="generate-mnenomic"
           />
@@ -140,7 +173,7 @@ const GenerateMnenomicCard = () => {
               <DemoAutocomplete setCoinType={setCoinType} />
               <CardActionButton
                 buttonText="Derive Address"
-                handleClick={generatePrivateKey}
+                onClick={generatePrivateKey}
                 disabled={!isInit || !mnenomic || !coinType}
                 testId="derive-address"
               />
@@ -154,7 +187,11 @@ const GenerateMnenomicCard = () => {
             {walletInfos &&
               walletInfos.map((walletInfo, index) => {
                 return walletInfo ? (
-                  <DemoWalletInfo walletInfo={walletInfo} index={index} />
+                  <DemoWalletInfo
+                    walletInfo={walletInfo}
+                    index={index}
+                    callback={deletePrivateKey}
+                  />
                 ) : null;
               })}
           </>

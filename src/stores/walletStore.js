@@ -491,7 +491,7 @@ export default class WalletStore {
   }
 
   getWallet(coinType) {
-    const data = this.coinTypeMapping.find((data) => data.token === coinType);
+    const data = this.coinTypeMapping.find((data) => data.label === coinType);
     return data.wallet;
   }
 

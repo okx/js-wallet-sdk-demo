@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
+import DemoSnackBar from "./components/DemoSnackBar";
 
 const InitSDKCard = lazy(() => import("./features/initSDK"));
 const GeneratePrivateKeyCard = lazy(() =>
@@ -46,6 +47,7 @@ export default function Dashboard() {
                 <GenerateMnenomicCard />
               </Grid>
             </Grid>
+            <DemoSnackBar />
           </Container>
         </Box>
       </Box>
