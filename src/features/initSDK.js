@@ -54,9 +54,17 @@ const InitSDKCard = () => {
         </CardContent>
         <CardActions sx={{ pl: 2, pr: 2, pb: 2 }}>
           {!isInit ? (
-            <CardActionButton buttonText="Initialize" handleClick={initSDK} />
+            <CardActionButton
+              buttonText="Initialize"
+              handleClick={initSDK}
+              testId="initialize"
+            />
           ) : (
-            <CardActionButton buttonText="Dispose" handleClick={dispose} />
+            <CardActionButton
+              buttonText="Dispose"
+              handleClick={dispose}
+              testId="dispose"
+            />
           )}
         </CardActions>
       </Card>

@@ -1,6 +1,11 @@
 import { Button } from "@mui/material";
 
-const CardActionButton = ({ buttonText, handleClick, disabled = false }) => {
+const CardActionButton = ({
+  buttonText,
+  handleClick,
+  disabled = false,
+  testId = "",
+}) => {
   return (
     <Button
       size="small"
@@ -8,6 +13,7 @@ const CardActionButton = ({ buttonText, handleClick, disabled = false }) => {
       sx={{ backgroundColor: "black", borderRadius: 2 }}
       onClick={handleClick}
       disabled={disabled}
+      data-testid={testId}
     >
       {buttonText}
     </Button>
