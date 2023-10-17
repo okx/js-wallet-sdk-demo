@@ -7,6 +7,7 @@ const DemoAutocomplete = ({ setCoinType }) => {
   const { walletStore } = useStore();
   const coinTypeOptions = walletStore.coinTypeMapping.map((data) => {
     return {
+      // network: data.network,
       label: `${data.network} - ${data.label}`,
       value: data.token,
     };
@@ -18,6 +19,7 @@ const DemoAutocomplete = ({ setCoinType }) => {
       renderInput={(params) => <TextField {...params} label="Coin Type" />}
       onChange={(_, value) => setCoinType(value?.value)}
       isOptionEqualToValue={(option, value) => option.value === value.value}
+      // groupBy={(option) => option.network}
     />
   );
 };
