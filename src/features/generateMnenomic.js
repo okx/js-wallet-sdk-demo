@@ -123,8 +123,7 @@ const GenerateMnenomicCard = () => {
         </CardContent>
         <CardContent
           sx={{
-            pt: 1,
-            pb: 2,
+            py: 1,
             mx: 2,
             borderRadius: 2,
             backgroundColor: "#f7f7f7",
@@ -133,12 +132,23 @@ const GenerateMnenomicCard = () => {
           <Grid container spacing={2}>
             <Grid item xs>
               {mnenomic ? (
-                <Typography sx={{ minHeight: 24, fontSize: 20 }}>
+                <Typography
+                  sx={{
+                    minHeight: 24,
+                    fontSize: 16,
+                    alignContent: "center",
+                  }}
+                >
                   {mnenomic}
                 </Typography>
               ) : (
                 <Typography
-                  sx={{ minHeight: 24, fontSize: 16, color: "#929292" }}
+                  sx={{
+                    minHeight: 24,
+                    fontSize: 16,
+                    color: "#929292",
+                    alignContent: "center",
+                  }}
                 >
                   {`Click "Generate Mnenomic" to randomly generate mnenomic`}
                 </Typography>

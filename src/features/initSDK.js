@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
-import { Card, CardContent, CardActions, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+  Grid,
+} from "@mui/material";
 
 import { CardActionButton } from "../components/CardActionButton";
 import { DemoDialog } from "../components/DemoDialog";
@@ -70,6 +76,22 @@ const InitSDKCard = () => {
             />
           )}
           <CardActionButton buttonText="Github" onClick={linkToGithub} />
+          <Grid
+            container
+            spacing={1}
+            sx={{
+              ml: 1,
+              mt: 0,
+            }}
+          >
+            <iframe
+              src="https://ghbtns.com/github-btn.html?user=dennislky&repo=github-pages-test&type=star&count=true&size=large"
+              frameborder="0"
+              width="170"
+              height="30"
+              title="GitHub"
+            />
+          </Grid>
         </CardActions>
       </Card>
       <DemoDialog
