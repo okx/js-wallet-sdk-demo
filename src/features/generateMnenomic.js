@@ -129,14 +129,13 @@ const GenerateMnenomicCard = () => {
             backgroundColor: "#f7f7f7",
           }}
         >
-          <Grid container spacing={2}>
+          <Grid container spacing={2} alignItems="center">
             <Grid item xs>
               {mnenomic ? (
                 <Typography
                   sx={{
                     minHeight: 24,
                     fontSize: 16,
-                    alignContent: "center",
                   }}
                 >
                   {mnenomic}
@@ -147,7 +146,6 @@ const GenerateMnenomicCard = () => {
                     minHeight: 24,
                     fontSize: 16,
                     color: "#929292",
-                    alignContent: "center",
                   }}
                 >
                   {`Click "Generate Mnenomic" to randomly generate mnenomic`}
@@ -156,11 +154,8 @@ const GenerateMnenomicCard = () => {
             </Grid>
             <Grid item>
               {mnenomic ? (
-                <IconButton>
-                  <ContentCopyIcon
-                    size="small"
-                    onClick={() => contentCopy(mnenomic, appStore)}
-                  />
+                <IconButton onClick={() => contentCopy(mnenomic, appStore)}>
+                  <ContentCopyIcon />
                 </IconButton>
               ) : null}
             </Grid>

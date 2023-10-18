@@ -30,17 +30,11 @@ const DemoWalletInfo = ({ walletInfo, index, callback }) => {
             <AlertTitle>Success</AlertTitle>
           </Grid>
           <Grid item>
-            <IconButton>
-              <ContentCopyIcon
-                size="small"
-                onClick={() => contentCopy(walletInfo, appStore)}
-              />
+            <IconButton onClick={() => contentCopy(walletInfo, appStore)}>
+              <ContentCopyIcon fontSize="small" />
             </IconButton>
-            <IconButton>
-              <DeleteIcon
-                size="small"
-                onClick={() => deleteWalletInfo(callback, appStore)}
-              />
+            <IconButton onClick={() => deleteWalletInfo(callback, appStore)}>
+              <DeleteIcon fontSize="small" />
             </IconButton>
           </Grid>
         </Grid>
