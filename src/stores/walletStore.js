@@ -475,7 +475,7 @@ export default class WalletStore {
     this.coinTypeMapping.push({
       network: "ZKSPACE",
       token: "ZKSPACE",
-      label: "Zkspace",
+      label: "zkSpace",
       wallet: this.zkSpaceWallet,
     });
 
@@ -483,7 +483,7 @@ export default class WalletStore {
     this.coinTypeMapping.push({
       network: "ZKSYNC",
       token: "ZKSYNC",
-      label: "Zkspace",
+      label: "zkSync",
       wallet: this.zkSyncWallet,
     });
 
