@@ -47,7 +47,7 @@ describe("generateMnenomic", () => {
     const deriveAddressButton = screen.getByTestId("derive-address");
     expect(deriveAddressButton).toBeInTheDocument();
 
-    const autocomplete = screen.getByTestId("autocomplete");
+    const autocomplete = screen.getByTestId("autocomplete-coin-type");
     const input = within(autocomplete).getByRole("combobox");
     autocomplete.focus();
     fireEvent.change(input, { target: { value: "BTC" } });

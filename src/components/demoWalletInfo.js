@@ -41,6 +41,12 @@ const DemoWalletInfo = ({ walletInfo, index, callback }) => {
         {walletInfo.coinType && (
           <strong>{`Chain: ${walletInfo.coinType}`}</strong>
         )}
+        {walletInfo.segwitType && (
+          <>
+            <br />
+            <strong>{`Segwit Type: ${walletInfo.segwitType}`}</strong>
+          </>
+        )}
         {walletInfo.derivedPath && (
           <>
             <br />

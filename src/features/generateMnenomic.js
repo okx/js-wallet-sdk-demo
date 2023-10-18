@@ -16,7 +16,8 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { bip39 } from "@okxweb3/crypto-lib";
 
 import { CardActionButton } from "../components/CardActionButton";
-import { DemoAutocomplete } from "../components/DemoAutocomplete";
+import { DemoAutocompleteCoinType } from "../components/DemoAutocompleteCoinType";
+import { DemoAutocompleteSegwit } from "../components/DemoAutocompleteSegwit";
 import { DemoDialog } from "../components/DemoDialog";
 import DemoWalletInfo from "../components/DemoWalletInfo";
 import { useStore } from "../stores";
@@ -25,6 +26,8 @@ import { useStore } from "../stores";
 const GenerateMnenomicCard = () => {
   // local UI state
   const [coinType, setCoinType] = useState();
+  const [network, setNetwork] = useState();
+  const [segwitType, setSegwitType] = useState();
   const [mnenomic, setMnenomic] = useState();
   const [walletInfos, setWalletInfos] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -68,8 +71,11 @@ const GenerateMnenomicCard = () => {
       return;
     }
     if (
-      walletInfos.findIndex((walletInfo) => walletInfo.coinType === coinType) >
-      -1
+      walletInfos.findIndex(
+        (walletInfo) =>
+          walletInfo.coinType === coinType &&
+          walletInfo.segwitType === segwitType?.value
+      ) > -1
     ) {
       setShowDialog(true);
       return;
@@ -78,14 +84,30 @@ const GenerateMnenomicCard = () => {
       setErrorMessage("");
       let wallet = walletStore.getWallet(coinType);
       if (wallet) {
-        const derivedPath = await wallet.getDerivedPath({ index: 0 });
+        const derivePathParams = { index: 0 };
+        if (network === "BTC" && segwitType?.enumValue) {
+          Object.assign(derivePathParams, {
+            segwitType: segwitType?.enumValue,
+          });
+        }
+        const derivedPath = await wallet.getDerivedPath(derivePathParams);
         const privateKey = await wallet.getDerivedPrivateKey({
           mnenomic,
           hdPath: derivedPath,
         });
-        const address = await wallet.getNewAddress({ privateKey });
+        const newAddressParams = { privateKey };
+        if (network === "BTC" && segwitType?.value) {
+          Object.assign(newAddressParams, {
+            addressType:
+              segwitType?.value === "segwit_nested_49"
+                ? "segwit_nested"
+                : segwitType?.value,
+          });
+        }
+        const address = await wallet.getNewAddress(newAddressParams);
         const walletInfo = {
           coinType,
+          segwitType: segwitType ? segwitType.value : undefined,
           derivedPath,
           privateKey,
           address: address.address,
@@ -175,7 +197,14 @@ const GenerateMnenomicCard = () => {
               <Typography sx={{ fontSize: 20 }}>Coin Type</Typography>
             </CardContent>
             <CardActions sx={{ pl: 2, pr: 2, pb: 2 }}>
-              <DemoAutocomplete setCoinType={setCoinType} />
+              <DemoAutocompleteCoinType
+                setCoinType={setCoinType}
+                setNetwork={setNetwork}
+                setSegwitType={setSegwitType}
+              />
+              {network && (
+                <DemoAutocompleteSegwit setSegwitType={setSegwitType} />
+              )}
               <CardActionButton
                 buttonText="Derive Address"
                 onClick={generatePrivateKey}

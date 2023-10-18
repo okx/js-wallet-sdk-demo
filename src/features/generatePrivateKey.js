@@ -11,7 +11,8 @@ import {
 } from "@mui/material";
 
 import { CardActionButton } from "../components/CardActionButton";
-import { DemoAutocomplete } from "../components/DemoAutocomplete";
+import { DemoAutocompleteCoinType } from "../components/DemoAutocompleteCoinType";
+import { DemoAutocompleteSegwit } from "../components/DemoAutocompleteSegwit";
 import { DemoDialog } from "../components/DemoDialog";
 import DemoWalletInfo from "../components/DemoWalletInfo";
 import { useStore } from "../stores";
@@ -20,6 +21,8 @@ import { useStore } from "../stores";
 const GeneratePrivateKeyCard = () => {
   // local UI state
   const [coinType, setCoinType] = useState();
+  const [network, setNetwork] = useState();
+  const [segwitType, setSegwitType] = useState();
   const [walletInfos, setWalletInfos] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [showDialog, setShowDialog] = useState(false);
@@ -31,6 +34,8 @@ const GeneratePrivateKeyCard = () => {
   // local UI state cleanup when sdk re-initialized
   useEffect(() => {
     setCoinType();
+    setNetwork();
+    setSegwitType();
     setWalletInfos([]);
     setErrorMessage("");
     setShowDialog(false);
@@ -48,8 +53,11 @@ const GeneratePrivateKeyCard = () => {
       return;
     }
     if (
-      walletInfos.findIndex((walletInfo) => walletInfo.coinType === coinType) >
-      -1
+      walletInfos.findIndex(
+        (walletInfo) =>
+          walletInfo.coinType === coinType &&
+          walletInfo.segwitType === segwitType?.value
+      ) > -1
     ) {
       setShowDialog(true);
       return;
@@ -59,9 +67,19 @@ const GeneratePrivateKeyCard = () => {
       let wallet = walletStore.getWallet(coinType);
       if (wallet) {
         const privateKey = await wallet.getRandomPrivateKey();
-        const address = await wallet.getNewAddress({ privateKey });
+        const params = { privateKey };
+        if (network === "BTC" && segwitType?.value) {
+          Object.assign(params, {
+            addressType:
+              segwitType?.value === "segwit_nested_49"
+                ? "segwit_nested"
+                : segwitType?.value,
+          });
+        }
+        const address = await wallet.getNewAddress(params);
         const walletInfo = {
           coinType,
+          segwitType: segwitType ? segwitType.value : undefined,
           privateKey,
           address: address.address,
         };
@@ -97,7 +115,12 @@ const GeneratePrivateKeyCard = () => {
           <Typography sx={{ fontSize: 20 }}>Coin Type</Typography>
         </CardContent>
         <CardActions sx={{ pl: 2, pr: 2, pb: 2 }}>
-          <DemoAutocomplete setCoinType={setCoinType} />
+          <DemoAutocompleteCoinType
+            setCoinType={setCoinType}
+            setNetwork={setNetwork}
+            setSegwitType={setSegwitType}
+          />
+          {network && <DemoAutocompleteSegwit setSegwitType={setSegwitType} />}
           <CardActionButton
             buttonText="Generate Address"
             onClick={generatePrivateKey}

@@ -40,7 +40,7 @@ describe("generatePrivateKey", () => {
     useStore.mockReturnValue(mockData);
     render(<GeneratePrivateKeyCard />);
 
-    const autocomplete = screen.getByTestId("autocomplete");
+    const autocomplete = screen.getByTestId("autocomplete-coin-type");
     const input = within(autocomplete).getByRole("combobox");
     autocomplete.focus();
     fireEvent.change(input, { target: { value: "BTC" } });
