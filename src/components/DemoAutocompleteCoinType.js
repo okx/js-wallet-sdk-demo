@@ -24,7 +24,9 @@ const DemoAutocompleteCoinType = ({
       onChange={(_, value) => {
         setCoinType(value?.value);
         setNetwork(value?.network === "BTC" ? value?.network : undefined);
-        setSegwitType();
+        if (value?.network !== "BTC") {
+          setSegwitType();
+        }
       }}
       isOptionEqualToValue={(option, value) => option.value === value.value}
       groupBy={(option) => option.network}
