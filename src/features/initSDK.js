@@ -43,9 +43,9 @@ const InitSDKCard = () => {
   const dispose = () => {
     setShowDialog(true);
   };
-  const linkToGithub = () => {
-    window.open("https://github.com/dennislky/github-pages-test", "_blank");
-  };
+  // const linkToGithub = () => {
+  //   window.open("https://github.com/dennislky/github-pages-test", "_blank");
+  // };
 
   // render logic
   return (
@@ -75,7 +75,7 @@ const InitSDKCard = () => {
               testId="dispose"
             />
           )}
-          <CardActionButton buttonText="Github" onClick={linkToGithub} />
+          {/* <CardActionButton buttonText="Github" onClick={linkToGithub} /> */}
           <Grid
             container
             spacing={1}
