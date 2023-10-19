@@ -6,6 +6,12 @@ For more details of SDK Usage, please refer to [OKX JS Wallet SDK](https://githu
 
 For more details of OKX Build, please refer to [OKX Build](https://www.okx.com/web3/build/docs/home/welcome).
 
+### Polyfill
+
+For applications that are bootstrapped by create-react-app like this demo page, please consider to install react-app-rewired and reference config-overrides.js at the root folder to polyfill necessary node core modules required for the OKX Wallet SDK.
+For applications that are using Webpack 5 as bundler, please consider to update webpack.config.js resolve.fallback to polyfill necessary node core modules required for the OKS Wallet SDK.
+For applications that are using Vite as bundler, please consider to update vite.config.js build.rollupOptions.external to polyfill necessary node core modules required for the OKS Wallet SDK.
+
 ## Available Scripts
 
 In the project directory, you can run:
