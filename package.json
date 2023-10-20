@@ -1,8 +1,8 @@
 {
-  "name": "github-pages-test",
-  "version": "0.1.0",
+  "name": "js-wallet-sdk-demo",
+  "version": "1.0.0",
   "private": true,
-  "homepage": "https://dennislky.github.io/github-pages-test",
+  "homepage": "https://okx.github.io/js-wallet-sdk-demo",
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
