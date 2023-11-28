@@ -13,6 +13,8 @@ const GeneratePrivateKeyCard = lazy(() =>
   import("./features/generatePrivateKey")
 );
 const GenerateMnenomicCard = lazy(() => import("./features/generateMnenomic"));
+const GetAllChainsCard = lazy(() => import("./features/getAllChains"));
+const GetAllCoinsCard = lazy(() => import("./features/getAllCoins"));
 
 const defaultTheme = createTheme();
 export default function Dashboard() {
@@ -45,6 +47,12 @@ export default function Dashboard() {
               </Grid>
               <Grid item xs={12}>
                 <GenerateMnenomicCard />
+              </Grid>
+              <Grid item xs={12}>
+                <GetAllChainsCard />
+              </Grid>
+              <Grid item xs={12}>
+                <GetAllCoinsCard />
               </Grid>
             </Grid>
             <DemoSnackBar />

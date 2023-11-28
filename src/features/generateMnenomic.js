@@ -124,6 +124,7 @@ const GenerateMnenomicCard = () => {
       setErrorMessage(err.toString());
     }
   };
+
   const deletePrivateKey = (index) => {
     setWalletInfos(walletInfos.toSpliced(index, 1));
   };

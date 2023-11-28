@@ -34,10 +34,18 @@ import { SuiWallet } from "@okxweb3/coin-sui";
 import { TrxWallet } from "@okxweb3/coin-tron";
 import { ZkspaceWallet, ZksyncWallet } from "@okxweb3/coin-zkspace";
 
+// import { getRequestUrl, headerParams } from "../utils/index";
+// import { API_GET_ALL_CHAINS, API_GET_ALL_COINS } from "../constants/index";
+
 export default class WalletStore {
   rootStore;
   coinTypeMapping = [];
   isInit = false;
+
+  chainsAvailable = [];
+  coinsAvailable = [];
+  selectedChain;
+  selectedCoin;
 
   constructor(rootStore) {
     makeAutoObservable(this, { rootStore: false });
@@ -495,8 +503,87 @@ export default class WalletStore {
     return data.wallet;
   }
 
+  fetchChainsAvailable = async () => {
+    this.chainsAvailable = [
+      {
+        name: "Ethereum",
+        logoUrl: "http://www.eth.org/eth.png",
+        shortName: "ETH",
+        enableGas: true,
+        coinId: "3",
+        chainId: "1",
+      },
+    ];
+    // try {
+    //   const url = getRequestUrl(API_GET_ALL_CHAINS);
+    //   const response = await fetch(url, {
+    //     headers: headerParams,
+    //   });
+    //   const json = await response.json();
+    //   if (json && json.data) {
+    //     const data = json.data;
+    //     this.chainsAvailable = data;
+    //     console.log('chainsAvailable', this.chainsAvailable);
+    //   }
+    // } catch (err) {
+    //   console.error(err);
+    // }
+  };
+
+  setSelectedChain = (chainId) => {
+    this.selectedChain = this.chainsAvailable.find(
+      (chain) => chain.chainId === chainId
+    );
+  };
+
+  fetchCoinsAvailable = async () => {
+    this.coinsAvailable = [
+      {
+        chainId: 1,
+        coinId: 3,
+        decimals: 18,
+        logoUrl: "https://static.coinall.ltd/cdn/wallet/logo/ETH-20220328.png",
+        name: "Ethereum",
+        symbol: "ETH",
+        tokenAddress: "",
+        updateTime: 1543198579776,
+      },
+      {
+        chainId: 1,
+        coinId: 4,
+        decimals: 18,
+        logoUrl: "https://static.coinall.ltd/cdn/wallet/logo/ETC.png",
+        name: "Ethereum Classic",
+        symbol: "ETC",
+        tokenAddress: "",
+        updateTime: 1543198579776,
+      },
+    ];
+    // try {
+    //   const url = getRequestUrl(API_GET_ALL_COINS, {
+    //     type: 0,
+    //     chainId: this.selectedChain.chainId,
+    //   });
+    //   const response = await fetch(url, {
+    //     headers: headerParams,
+    //   });
+    //   const json = await response.json();
+    //   if (json && json.data) {
+    //     const data = json.data;
+    //     this.coinsAvailable = data;
+    //   }
+    // } catch (err) {
+    //   console.error(err);
+    // }
+  };
+
   dispose() {
     this.coinTypeMapping = [];
     this.isInit = false;
+
+    this.chainsAvailable = [];
+    this.coinsAvailable = [];
+    this.selectedChain = null;
+    this.selectedCoin = null;
   }
 }

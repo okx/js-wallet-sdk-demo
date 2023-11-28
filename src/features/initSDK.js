@@ -86,7 +86,7 @@ const InitSDKCard = () => {
           >
             <iframe
               src="https://ghbtns.com/github-btn.html?user=okx&repo=js-wallet-sdk-demo&type=star&count=true&size=large"
-              frameborder="0"
+              frameBorder="0"
               width="170"
               height="30"
               title="GitHub"

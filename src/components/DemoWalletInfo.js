@@ -1,6 +1,7 @@
 import { Grid, Alert, AlertTitle, Divider, IconButton } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ValidateIcon from "@mui/icons-material/Verified";
 
 import "./DemoWalletInfo.css";
 import { useStore } from "../stores";
@@ -16,8 +17,25 @@ const deleteWalletInfo = (callback, appStore) => {
   appStore.openSnackBar = true;
   callback();
 };
+const validateAddress = (walletInfo, appStore, walletStore) => {
+  let wallet = walletStore.getWallet(walletInfo.coinType);
+  if (wallet) {
+    const isValid = wallet.validAddress({ address: walletInfo.address });
+    if (isValid) {
+      appStore.snackBarMessage = "Address is valid";
+      appStore.openSnackBar = true;
+    } else {
+      appStore.snackBarMessage = "Address is invalid";
+      appStore.openSnackBar = true;
+    }
+  } else {
+    appStore.snackBarMessage = "No such wallet";
+    appStore.openSnackBar = true;
+  }
+};
+
 const DemoWalletInfo = ({ walletInfo, index, callback }) => {
-  const { appStore } = useStore();
+  const { appStore, walletStore } = useStore();
   return (
     <>
       <Alert
@@ -30,6 +48,11 @@ const DemoWalletInfo = ({ walletInfo, index, callback }) => {
             <AlertTitle>Success</AlertTitle>
           </Grid>
           <Grid item>
+            <IconButton
+              onClick={() => validateAddress(walletInfo, appStore, walletStore)}
+            >
+              <ValidateIcon fontSize="small" />
+            </IconButton>
             <IconButton onClick={() => contentCopy(walletInfo, appStore)}>
               <ContentCopyIcon fontSize="small" />
             </IconButton>
