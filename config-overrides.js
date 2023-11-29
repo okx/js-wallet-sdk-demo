@@ -1,16 +1,12 @@
 const webpack = require("webpack");
 
-module.exports = function override(config) {
+const overrideWebpack = (config) => {
   config.ignoreWarnings = [/Failed to parse source map/];
   const fallback = config.resolve.fallback || {};
   Object.assign(fallback, {
     crypto: require.resolve("crypto-browserify"),
     stream: require.resolve("stream-browserify"),
     assert: require.resolve("assert/"),
-    // http: require.resolve("stream-http"),
-    // https: require.resolve("https-browserify"),
-    // os: require.resolve("os-browserify"),
-    // url: require.resolve("url"),
     buffer: require.resolve("buffer/"),
   });
 
@@ -22,4 +18,27 @@ module.exports = function override(config) {
     }),
   ]);
   return config;
+};
+
+const okxProxy = {
+  target: "https://www.okx.com",
+  changeOrigin: true,
+};
+const overrideDevServer = (configFunction) => {
+  return (proxy, allowedHost) => {
+    const newProxy = {
+      ...proxy,
+      "/api/v5/waas": okxProxy,
+    };
+    console.log(newProxy);
+    const config = configFunction(proxy, allowedHost);
+    config.host = "localhost";
+    console.log(config);
+    return config;
+  };
+};
+
+module.exports = {
+  webpack: overrideWebpack,
+  devServer: overrideDevServer,
 };

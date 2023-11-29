@@ -9,12 +9,18 @@ import Grid from "@mui/material/Grid";
 import DemoSnackBar from "./components/DemoSnackBar";
 
 const InitSDKCard = lazy(() => import("./features/initSDK"));
-const GeneratePrivateKeyCard = lazy(() =>
-  import("./features/generatePrivateKey")
-);
+// const GeneratePrivateKeyCard = lazy(() =>
+//   import("./features/generatePrivateKey")
+// );
 const GenerateMnenomicCard = lazy(() => import("./features/generateMnenomic"));
 const GetAllChainsCard = lazy(() => import("./features/getAllChains"));
 const GetAllCoinsCard = lazy(() => import("./features/getAllCoins"));
+const CreateWalletCard = lazy(() => import("./features/createWallet"));
+// const GetBalanceCard = lazy(() => import("./features/getBalance"));
+// const GetTransactionsCard = lazy(() => import("./features/getTransactions"));
+// const GetTransactionDetailCard = lazy(() =>
+//   import("./features/getTransactionDetail")
+// );
 
 const defaultTheme = createTheme();
 export default function Dashboard() {
@@ -36,23 +42,26 @@ export default function Dashboard() {
         >
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Typography variant="h4" sx={{ mb: 4 }}>
-              OKX Wallet SDK Demo
+              OKX WaaS Demo
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <InitSDKCard />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <GeneratePrivateKeyCard />
-              </Grid>
-              <Grid item xs={12}>
-                <GenerateMnenomicCard />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <GetAllChainsCard />
               </Grid>
               <Grid item xs={12}>
                 <GetAllCoinsCard />
+              </Grid>
+              <Grid item xs={12}>
+                <GenerateMnenomicCard />
+              </Grid>
+              <Grid item xs={12}>
+                <CreateWalletCard />
               </Grid>
             </Grid>
             <DemoSnackBar />
