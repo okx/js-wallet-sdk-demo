@@ -14,7 +14,7 @@ import { CardActionButton } from "../components/CardActionButton";
 import { useStore } from "../stores";
 
 // card per feature
-const CreateWalletCard = () => {
+const GetTransactionDetailCard = () => {
   // local UI state
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -28,7 +28,7 @@ const CreateWalletCard = () => {
   }, [isInit]);
 
   // feature logic
-  const createWallet = async () => {
+  const getTransactionDetail = async () => {
     try {
       setErrorMessage("");
     } catch (err) {
@@ -43,18 +43,18 @@ const CreateWalletCard = () => {
       <Card
         variant="outlined"
         sx={{ minWidth: 275, borderRadius: 5 }}
-        key="create-wallet-card"
+        key="get-transaction-detail-card"
       >
         <CardContent sx={{ pb: 1 }}>
-          <Typography sx={{ fontSize: 26 }}>Create Wallet</Typography>
+          <Typography sx={{ fontSize: 26 }}>Get Transaction Detail</Typography>
         </CardContent>
         <Divider flexItem />
         <CardActions sx={{ pl: 2, pr: 2, pb: 2 }}>
           <CardActionButton
-            buttonText="Create Wallet"
-            onClick={createWallet}
+            buttonText="Get Transaction Detail"
+            onClick={getTransactionDetail}
             disabled={!isInit}
-            testId="create-wallet"
+            testId="get-transaction-detail"
           />
         </CardActions>
         {errorMessage && (
@@ -68,4 +68,4 @@ const CreateWalletCard = () => {
   ) : null;
 };
 
-export default observer(CreateWalletCard);
+export default observer(GetTransactionDetailCard);

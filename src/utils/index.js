@@ -1,4 +1,5 @@
 import { sha256 } from "js-sha256";
+import { v4 as uuidv4 } from "uuid";
 
 import { HOST_DEV, HOST_PROD, METHOD_POST } from "../constants";
 
@@ -33,4 +34,8 @@ export const headerParams = (timestamp, method, url, body = "") => {
     "OK-ACCESS-TIMESTAMP": timestamp,
     "OK-ACCESS-SIGN": signature,
   };
+};
+
+export const generateWalletId = () => {
+  return uuidv4();
 };
