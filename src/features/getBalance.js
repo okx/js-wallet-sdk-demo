@@ -20,7 +20,7 @@ const GetBalanceCard = () => {
 
   // mobx store that link up with sdk wallets
   const { walletStore } = useStore();
-  const { isInit } = walletStore;
+  const { isInit, chainsAvailable, walletId } = walletStore;
 
   // local UI state cleanup when sdk re-initialized
   useEffect(() => {
@@ -53,7 +53,7 @@ const GetBalanceCard = () => {
           <CardActionButton
             buttonText="Get Balance"
             onClick={getBalance}
-            disabled={!isInit}
+            disabled={!isInit || chainsAvailable?.length === 0 || !walletId}
             testId="get-balance"
           />
         </CardActions>

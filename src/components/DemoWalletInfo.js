@@ -60,6 +60,12 @@ const DemoWalletInfo = ({ walletInfo, index, callback }) => {
         {walletInfo.coinType && (
           <strong>{`Chain: ${walletInfo.coinType}`}</strong>
         )}
+        {walletInfo.chainId ? (
+          <>
+            <br />
+            <strong>{`Chain ID: ${walletInfo.chainId}`}</strong>
+          </>
+        ) : null}
         {walletInfo.segwitType && (
           <>
             <br />
@@ -81,7 +87,7 @@ const DemoWalletInfo = ({ walletInfo, index, callback }) => {
         {walletInfo.address && (
           <>
             <br />
-            <strong>{`Address: ${walletInfo.address}`}</strong>{" "}
+            <strong>{`Address: ${walletInfo.address}`}</strong>
           </>
         )}
         {walletInfo.publicKey && (

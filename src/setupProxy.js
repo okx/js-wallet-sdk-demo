@@ -4,5 +4,5 @@ const proxy = {
   changeOrigin: true,
 };
 module.exports = function (app) {
-  app.use("/api/v5/waas", createProxyMiddleware(proxy));
+    app.use("/api/v5/waas", createProxyMiddleware(proxy));
 };

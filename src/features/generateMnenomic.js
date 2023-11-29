@@ -29,19 +29,17 @@ const GenerateMnenomicCard = () => {
   const [network, setNetwork] = useState();
   const [segwitType, setSegwitType] = useState();
   const [mnenomic, setMnenomic] = useState();
-  const [walletInfos, setWalletInfos] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [showDialog, setShowDialog] = useState(false);
 
   // mobx store that link up with sdk wallets
   const { walletStore, appStore } = useStore();
-  const isInit = walletStore.isInit;
+  const { isInit, walletInfos, chainsAvailable } = walletStore;
 
   // local UI state cleanup when sdk re-initialized
   useEffect(() => {
     setCoinType();
     setMnenomic();
-    setWalletInfos([]);
     setErrorMessage("");
     setShowDialog(false);
   }, [isInit]);
@@ -106,6 +104,9 @@ const GenerateMnenomicCard = () => {
         }
         const address = await wallet.getNewAddress(newAddressParams);
         const walletInfo = {
+          chainId: chainsAvailable
+            ? chainsAvailable.find((chain) => chain.name === coinType)?.chainId
+            : undefined,
           coinType,
           segwitType: segwitType ? segwitType.value : undefined,
           derivedPath,
@@ -117,7 +118,7 @@ const GenerateMnenomicCard = () => {
             publicKey: address.publicKey,
           });
         }
-        setWalletInfos([walletInfo, ...walletInfos]);
+        walletStore.setWalletInfos([walletInfo, ...walletInfos]);
       }
     } catch (err) {
       console.error(err);
@@ -126,7 +127,7 @@ const GenerateMnenomicCard = () => {
   };
 
   const deletePrivateKey = (index) => {
-    setWalletInfos(walletInfos.toSpliced(index, 1));
+    walletStore.setWalletInfos(walletInfos.toSpliced(index, 1));
   };
 
   // render logic
@@ -225,7 +226,7 @@ const GenerateMnenomicCard = () => {
                   <DemoWalletInfo
                     walletInfo={walletInfo}
                     index={index}
-                    callback={deletePrivateKey}
+                    callback={() => deletePrivateKey(index)}
                   />
                 ) : null;
               })}

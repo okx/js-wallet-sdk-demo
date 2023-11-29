@@ -34,11 +34,18 @@ import { SuiWallet } from "@okxweb3/coin-sui";
 import { TrxWallet } from "@okxweb3/coin-tron";
 import { ZkspaceWallet, ZksyncWallet } from "@okxweb3/coin-zkspace";
 
-import { getRequestUrl, headerParams } from "../utils/index";
 import {
+  generateWalletId,
+  getRequestPathWithSearchParams,
+  getRequestUrl,
+  headerParams,
+} from "../utils/index";
+import {
+  API_CREATE_WALLET,
   API_GET_ALL_CHAINS,
   API_GET_ALL_COINS,
   METHOD_GET,
+  METHOD_POST,
 } from "../constants/index";
 
 export default class WalletStore {
@@ -50,6 +57,9 @@ export default class WalletStore {
   coinsAvailable = [];
   selectedChain;
   selectedCoin;
+
+  walletInfos = [];
+  walletId;
 
   constructor(rootStore) {
     makeAutoObservable(this, { rootStore: false });
@@ -508,16 +518,6 @@ export default class WalletStore {
   }
 
   fetchChainsAvailable = async () => {
-    // this.chainsAvailable = [
-    //   {
-    //     name: "Ethereum",
-    //     logoUrl: "http://www.eth.org/eth.png",
-    //     shortName: "ETH",
-    //     enableGas: true,
-    //     coinId: "3",
-    //     chainId: "1",
-    //   },
-    // ];
     try {
       const date = new Date().toISOString();
       const url = getRequestUrl(API_GET_ALL_CHAINS);
@@ -542,36 +542,16 @@ export default class WalletStore {
   };
 
   fetchCoinsAvailable = async () => {
-    // this.coinsAvailable = [
-    //   {
-    //     chainId: 1,
-    //     coinId: 3,
-    //     decimals: 18,
-    //     logoUrl: "https://static.coinall.ltd/cdn/wallet/logo/ETH-20220328.png",
-    //     name: "Ethereum",
-    //     symbol: "ETH",
-    //     tokenAddress: "",
-    //     updateTime: 1543198579776,
-    //   },
-    //   {
-    //     chainId: 1,
-    //     coinId: 4,
-    //     decimals: 18,
-    //     logoUrl: "https://static.coinall.ltd/cdn/wallet/logo/ETC.png",
-    //     name: "Ethereum Classic",
-    //     symbol: "ETC",
-    //     tokenAddress: "",
-    //     updateTime: 1543198579776,
-    //   },
-    // ];
     try {
       const date = new Date().toISOString();
       const url = getRequestUrl(API_GET_ALL_COINS, {
-        type: 0, // 0: native token, 1: token
-        chainId: this.selectedChain.chainId,
+        type: 0,
+      });
+      const path = getRequestPathWithSearchParams(API_GET_ALL_COINS, {
+        type: 0,
       });
       const response = await fetch(url, {
-        headers: headerParams(date, METHOD_GET, API_GET_ALL_COINS),
+        headers: headerParams(date, METHOD_GET, path),
       });
       const json = await response.json();
       if (json && json.data) {
@@ -584,13 +564,56 @@ export default class WalletStore {
     }
   };
 
+  setWalletInfos = (walletInfos) => {
+    this.walletInfos = walletInfos;
+  };
+
+  createWallet = async () => {
+    try {
+      const walletId = generateWalletId();
+      const date = new Date().toISOString();
+      const url = getRequestUrl(API_CREATE_WALLET);
+      const body = {
+        walletId,
+        addresses: this.walletInfos.map((walletInfo) => {
+          console.log(walletInfo);
+          return {
+            chainId: walletInfo.chainId || 1,
+            address: walletInfo.address,
+          };
+        }),
+      };
+      const response = await fetch(url, {
+        method: METHOD_POST,
+        headers: headerParams(
+          date,
+          METHOD_POST,
+          API_CREATE_WALLET,
+          JSON.stringify(body)
+        ),
+        body: JSON.stringify(body),
+      });
+      const json = await response.json();
+      if (json && json.data) {
+        const data = json.data;
+        this.walletId = data[0].walletId;
+        console.log("walletId", this.walletId);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   dispose() {
     this.coinTypeMapping = [];
     this.isInit = false;
 
     this.chainsAvailable = [];
     this.coinsAvailable = [];
-    this.selectedChain = null;
-    this.selectedCoin = null;
+    this.selectedChain = undefined;
+    this.selectedCoin = undefined;
+
+    this.walletInfos = [];
+    this.walletId = undefined;
   }
 }

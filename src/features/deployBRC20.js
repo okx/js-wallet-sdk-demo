@@ -20,7 +20,7 @@ const DeployBRC20Card = () => {
 
   // mobx store that link up with sdk wallets
   const { walletStore } = useStore();
-  const { isInit } = walletStore;
+  const { isInit, chainsAvailable, walletId } = walletStore;
 
   // local UI state cleanup when sdk re-initialized
   useEffect(() => {
@@ -53,7 +53,7 @@ const DeployBRC20Card = () => {
           <CardActionButton
             buttonText="Deploy"
             onClick={deployBRC20}
-            disabled={!isInit}
+            disabled={!isInit || chainsAvailable?.length === 0 || !walletId}
             testId="deploy-brc20"
           />
         </CardActions>
