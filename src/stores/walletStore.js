@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 import {
   BtcWallet,
@@ -44,6 +44,7 @@ import {
   API_CREATE_WALLET,
   API_GET_ALL_CHAINS,
   API_GET_ALL_COINS,
+  API_GET_ASSETS,
   METHOD_GET,
   METHOD_POST,
 } from "../constants/index";
@@ -55,11 +56,11 @@ export default class WalletStore {
 
   chainsAvailable = [];
   coinsAvailable = [];
-  selectedChain;
-  selectedCoin;
+  selectedChain = undefined;
+  selectedCoin = undefined;
 
   walletInfos = [];
-  walletId;
+  walletId = undefined;
 
   constructor(rootStore) {
     makeAutoObservable(this, { rootStore: false });
@@ -527,8 +528,10 @@ export default class WalletStore {
       const json = await response.json();
       if (json && json.data) {
         const data = json.data;
-        this.chainsAvailable = data;
-        console.log("chainsAvailable", this.chainsAvailable);
+        runInAction(() => {
+          this.chainsAvailable = data;
+          console.log("chainsAvailable", this.chainsAvailable);
+        });
       }
     } catch (err) {
       console.error(err);
@@ -556,8 +559,10 @@ export default class WalletStore {
       const json = await response.json();
       if (json && json.data) {
         const data = json.data;
-        this.coinsAvailable = data;
-        console.log("coinsAvailable", this.coinsAvailable);
+        runInAction(() => {
+          this.coinsAvailable = data;
+          console.log("coinsAvailable", this.coinsAvailable);
+        });
       }
     } catch (err) {
       console.error(err);
@@ -578,7 +583,7 @@ export default class WalletStore {
         addresses: this.walletInfos.map((walletInfo) => {
           console.log(walletInfo);
           return {
-            chainId: walletInfo.chainId || 1,
+            chainId: walletInfo.chainId || 0,
             address: walletInfo.address,
           };
         }),
@@ -596,8 +601,46 @@ export default class WalletStore {
       const json = await response.json();
       if (json && json.data) {
         const data = json.data;
-        this.walletId = data[0].walletId;
-        console.log("walletId", this.walletId);
+        runInAction(() => {
+          this.walletId = data[0].walletId;
+          console.log("walletId", this.walletId);
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  getBalance = async () => {
+    try {
+      const walletId = this.walletId;
+      const date = new Date().toISOString();
+      const url = getRequestUrl(API_GET_ASSETS);
+      const body = {
+        walletId,
+        chainIds: this.walletInfos.reduce((arr, walletInfo) => {
+          if (!arr.includes(walletInfo.chainId)) {
+            return arr;
+          }
+          return [...arr, walletInfo.chainId];
+        }, []),
+      };
+      console.log(body);
+      const response = await fetch(url, {
+        method: METHOD_POST,
+        headers: headerParams(
+          date,
+          METHOD_POST,
+          API_GET_ASSETS,
+          JSON.stringify(body)
+        ),
+        body: JSON.stringify(body),
+      });
+      const json = await response.json();
+      if (json && json.data) {
+        const data = json.data;
+        console.log("balance", data);
+        return data;
       }
     } catch (err) {
       console.error(err);

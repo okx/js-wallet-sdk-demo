@@ -67,9 +67,7 @@ const CreateWalletCard = () => {
         {walletId ? (
           <Alert severity="success">
             <AlertTitle>Success</AlertTitle>
-            <div key={`wallet-${walletId}`}>
-              <strong>Wallet ID: {walletId}</strong>
-            </div>
+            <strong>Wallet ID: {walletId}</strong>
           </Alert>
         ) : null}
       </Card>

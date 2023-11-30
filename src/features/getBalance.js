@@ -17,6 +17,7 @@ import { useStore } from "../stores";
 const GetBalanceCard = () => {
   // local UI state
   const [errorMessage, setErrorMessage] = useState("");
+  const [balances, setBalances] = useState();
 
   // mobx store that link up with sdk wallets
   const { walletStore } = useStore();
@@ -31,6 +32,9 @@ const GetBalanceCard = () => {
   const getBalance = async () => {
     try {
       setErrorMessage("");
+      const data = await walletStore.getBalance();
+      console.log(data);
+      setBalances(data);
     } catch (err) {
       console.error(err);
       setErrorMessage(err.toString());
@@ -63,6 +67,28 @@ const GetBalanceCard = () => {
             {errorMessage}
           </Alert>
         )}
+        {balances ? (
+          <Alert severity="success">
+            <AlertTitle>Success</AlertTitle>
+            <strong>
+              Token Balances:{" "}
+              {balances[0].tokenAssets.map((balance) => {
+                return (
+                  <div>
+                    {balance.symbol}: {balance.balance}
+                  </div>
+                );
+              })}
+            </strong>
+            {/* <strong>BRC20 Balances: {balances[0].brc20TokenAssets.map(balance => {
+              return (
+                <div>
+                  <p>{balance.symbol}: {balance.balance}</p>
+                </div>
+              )
+            })}</strong> */}
+          </Alert>
+        ) : null}
       </Card>
     </>
   ) : null;

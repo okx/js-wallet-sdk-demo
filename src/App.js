@@ -14,7 +14,7 @@ const InitSDKCard = lazy(() => import("./features/initSDK"));
 // );
 const GenerateMnenomicCard = lazy(() => import("./features/generateMnenomic"));
 const GetAllChainsCard = lazy(() => import("./features/getAllChains"));
-const GetAllCoinsCard = lazy(() => import("./features/getAllCoins"));
+// const GetAllCoinsCard = lazy(() => import("./features/getAllCoins"));
 const CreateWalletCard = lazy(() => import("./features/createWallet"));
 const GetBalanceCard = lazy(() => import("./features/getBalance"));
 const GetTransactionsCard = lazy(() => import("./features/getTransactions"));
@@ -57,9 +57,9 @@ export default function Dashboard() {
               <Grid item xs={12}>
                 <GetAllChainsCard />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <GetAllCoinsCard />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <GenerateMnenomicCard />
               </Grid>
