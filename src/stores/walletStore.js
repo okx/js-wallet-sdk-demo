@@ -45,10 +45,15 @@ import {
   API_GET_ALL_CHAINS,
   API_GET_ALL_COINS,
   API_GET_ASSETS,
+  API_GET_SIGN_INFO,
   API_GET_TRANSACTIONS,
   API_GET_TRANSACTION_DETAIL,
+  API_GET_UTXO,
+  API_GET_UTXO_NFT,
+  API_SEND_TRANSACTION_BATCH,
   METHOD_GET,
   METHOD_POST,
+  TICK_NAME,
 } from "../constants/index";
 
 export default class WalletStore {
@@ -56,7 +61,22 @@ export default class WalletStore {
   coinTypeMapping = [];
   isInit = false;
 
-  chainsAvailable = [];
+  chainsAvailable = [
+    {
+      name: "BTC",
+      imageUrl: "https://static.coinall.ltd/cdn/wallet/logo/BTC.png",
+      shortName: "btc",
+      coinId: 1,
+      chainId: 0,
+    },
+    {
+      name: "Ethereum",
+      imageUrl: "https://static.coinall.ltd/cdn/wallet/logo/ETH-20220328.png",
+      shortName: "eth",
+      coinId: 3,
+      chainId: 1,
+    },
+  ];
   coinsAvailable = [];
   selectedChain = undefined;
   selectedCoin = undefined;
@@ -701,6 +721,452 @@ export default class WalletStore {
         const data = json.data;
         return data;
       }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  getSignInfo = async (fromAddress, toAddress) => {
+    try {
+      const date = new Date().toISOString();
+      const url = getRequestUrl(API_GET_SIGN_INFO);
+      const body = {
+        addrFrom: fromAddress,
+        addrTo: toAddress,
+        txAmount: 0,
+        chainId: 0,
+        extJson: {},
+      };
+      const response = await fetch(url, {
+        method: METHOD_POST,
+        headers: headerParams(
+          date,
+          METHOD_POST,
+          API_GET_SIGN_INFO,
+          JSON.stringify(body)
+        ),
+        body: JSON.stringify(body),
+      });
+      const json = await response.json();
+      if (json && json.data) {
+        const data = json.data;
+        console.log(data);
+        return data;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  getUTXO = async (
+    fromAddress,
+    inscriptionOutput,
+    minOutput,
+    normalCost,
+    txAmount
+  ) => {
+    try {
+      const date = new Date().toISOString();
+      const url = getRequestUrl(API_GET_UTXO);
+      const body = {
+        chainId: 0,
+        utxoRequests: [
+          {
+            address: fromAddress,
+            coinAmount:
+              inscriptionOutput * txAmount > minOutput
+                ? inscriptionOutput * txAmount
+                : minOutput,
+            serviceCharge: normalCost * txAmount,
+            utxoType: 11,
+          },
+        ],
+      };
+      const response = await fetch(url, {
+        method: METHOD_POST,
+        headers: headerParams(
+          date,
+          METHOD_POST,
+          API_GET_UTXO,
+          JSON.stringify(body)
+        ),
+        body: JSON.stringify(body),
+      });
+      const json = await response.json();
+      if (json && json.data) {
+        const data = json.data;
+        console.log(data);
+        return data;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  getUTXONFT = async (fromAddress) => {
+    try {
+      const date = new Date().toISOString();
+      const url = getRequestUrl(API_GET_UTXO_NFT);
+      const body = {
+        chainId: 0,
+        utxoRequests: [
+          {
+            address: fromAddress,
+            tick: TICK_NAME,
+            page: 1,
+            pageSize: 10,
+          },
+        ],
+      };
+      const response = await fetch(url, {
+        method: METHOD_POST,
+        headers: headerParams(
+          date,
+          METHOD_POST,
+          API_GET_UTXO_NFT,
+          JSON.stringify(body)
+        ),
+        body: JSON.stringify(body),
+      });
+      const json = await response.json();
+      if (json && json.data) {
+        const data = json.data;
+        console.log(data);
+        return data;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  constructBRC20Tx = async (
+    fromAddress,
+    utxoList,
+    normalFeeRate,
+    inscriptionOutput,
+    inscriptionBody
+  ) => {
+    try {
+      const privateKey = this.walletInfos.find(
+        (walletInfo) =>
+          walletInfo.coinType === "BTC" && walletInfo.address === fromAddress
+      ).privateKey;
+
+      const commitTxPrevOutputList = [];
+      utxoList.forEach((utxo) => {
+        commitTxPrevOutputList.push({
+          txId: utxo.txHash,
+          vOut: utxo.vOut,
+          amount: utxo.coinAmount,
+          address: fromAddress,
+          privateKey,
+        });
+      });
+
+      const inscriptionDataList = [];
+      inscriptionDataList.push({
+        contentType: "text/plain;charset=utf-8",
+        body: inscriptionBody,
+        revealAddr: fromAddress,
+      });
+
+      const wallet = this.getWallet("BTC");
+      const data = {
+        type: 1,
+        commitTxPrevOutputList,
+        commitFeeRate: normalFeeRate,
+        revealFeeRate: normalFeeRate,
+        revealOutValue: inscriptionOutput,
+        inscriptionDataList,
+        changeAddress: fromAddress,
+      };
+      const txs = await wallet.signTransaction({ data });
+      console.log(txs);
+      return txs;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  constructBTCTx = async (fromAddress, utxoList) => {
+    try {
+      const wallet = this.getWallet("BTC");
+      const privateKey = this.walletInfos.find(
+        (walletInfo) =>
+          walletInfo.coinType === "BTC" && walletInfo.address === fromAddress
+      ).privateKey;
+
+      const inputs = utxoList.map((utxo) => {
+        return {
+          txId: utxo.txHash,
+          vOut: utxo.vOut,
+          // amount: utxo.coinAmount,
+        };
+      });
+      const outputs = [
+        {
+          address: fromAddress,
+          // amount: 0,
+        },
+      ];
+      const txs = await wallet.signTransaction({
+        privateKey,
+        data: {
+          inputs,
+          outputs,
+          address: fromAddress,
+          feePerB: 2,
+        },
+      });
+      console.log(txs);
+      return txs;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  sendTransactionBatch = async (
+    fromAddress,
+    toAddress,
+    txs,
+    txType,
+    normalFeeRate
+  ) => {
+    try {
+      const wallet = this.getWallet("BTC");
+      const walletId = this.walletId;
+      const date = new Date().toISOString();
+      const url = getRequestUrl(API_SEND_TRANSACTION_BATCH);
+      const body = {
+        txList: [
+          {
+            signedTx: txs.commitTx,
+            walletId,
+            addrFrom: fromAddress,
+            addrTo: toAddress,
+            txHash: wallet.calcTxHash({
+              data: txs.commitTx,
+            }),
+            txAmount: 0,
+            chainId: 0,
+            txType,
+            serviceCharge: txs.commitTxFee,
+            tokenAddress: `${fromAddress}-brc20-okex`,
+            extJson: {
+              broadcastType: 1,
+              dependTx: [],
+              feeRate: normalFeeRate,
+              itemId: "commitTx",
+            },
+          },
+          ...txs.revealTxList.map((revealTx, index) => {
+            return {
+              signedTx: revealTx,
+              walletId,
+              addrFrom: fromAddress,
+              addrTo: toAddress,
+              txHash: wallet.calcTxHash({
+                data: revealTx,
+              }),
+              txAmount: 0,
+              chainId: 0,
+              txType,
+              serviceCharge: txs.revealTxFees[index],
+              tokenAddress: `${fromAddress}-brc20-okex`,
+              extJson: {
+                broadcastType: 1,
+                dependTx: [
+                  wallet.calcTxHash({
+                    data: txs.commitTx,
+                  }),
+                ],
+                feeRate: normalFeeRate,
+                itemId: `revealTx${index}`,
+              },
+            };
+          }),
+        ],
+      };
+      const response = await fetch(url, {
+        method: METHOD_POST,
+        headers: headerParams(
+          date,
+          METHOD_POST,
+          API_SEND_TRANSACTION_BATCH,
+          JSON.stringify(body)
+        ),
+        body: JSON.stringify(body),
+      });
+      const json = await response.json();
+      if (json && json.data) {
+        const data = json.data;
+        return data;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  sendTransaction = async (
+    fromAddress,
+    toAddress,
+    tx,
+    txType,
+    normalFeeRate,
+    normalCost
+  ) => {
+    try {
+      const wallet = this.getWallet("BTC");
+      const walletId = this.walletId;
+      const date = new Date().toISOString();
+      const url = getRequestUrl(API_SEND_TRANSACTION_BATCH);
+      const body = {
+        txList: [
+          {
+            signedTx: tx,
+            walletId,
+            addrFrom: fromAddress,
+            addrTo: toAddress,
+            txHash: wallet.calcTxHash({
+              data: tx,
+            }),
+            txAmount: 0,
+            chainId: 0,
+            txType,
+            serviceCharge: normalCost,
+            tokenAddress: `${fromAddress}-brc20-okex`,
+            extJson: {
+              broadcastType: 1,
+              dependTx: [],
+              feeRate: normalFeeRate,
+              itemId: "transferTx",
+            },
+          },
+        ],
+      };
+      const response = await fetch(url, {
+        method: METHOD_POST,
+        headers: headerParams(
+          date,
+          METHOD_POST,
+          API_SEND_TRANSACTION_BATCH,
+          JSON.stringify(body)
+        ),
+        body: JSON.stringify(body),
+      });
+      const json = await response.json();
+      if (json && json.data) {
+        const data = json.data;
+        return data;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  deployBRC20 = async (fromAddress) => {
+    try {
+      const signInfo = await this.getSignInfo(fromAddress, fromAddress);
+      // txAmount for deploy BRC20 is 1 commit tx + 1 reveal tx
+      const utxo = await this.getUTXO(
+        fromAddress,
+        signInfo[0].inscriptionOutput,
+        signInfo[0].normalCost,
+        1 + 1
+      );
+      const inscribedTxs = await this.constructDeployBRC20Tx(
+        fromAddress,
+        utxo[0].utxoList,
+        signInfo[0].normalFeeRate,
+        signInfo[0].inscriptionOutput,
+        `{"p":"brc-20","op":"deploy","tick":${TICK_NAME},"max":"21000000","lim":"1000"}`
+      );
+      const result = await this.sendTransactionBatch(
+        fromAddress,
+        fromAddress,
+        inscribedTxs,
+        "BRC20_DEPLOY",
+        signInfo[0].normalFeeRate
+      );
+      console.log(result);
+      return result;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  mintBRC20 = async (fromAddress) => {
+    try {
+      const signInfo = await this.getSignInfo(fromAddress, fromAddress);
+      // txAmount for deploy BRC20 is 1 commit tx + 1 reveal tx
+      const utxo = await this.getUTXO(
+        fromAddress,
+        signInfo[0].inscriptionOutput,
+        signInfo[0].normalCost,
+        1 + 1
+      );
+      const inscribedTxs = await this.constructDeployBRC20Tx(
+        fromAddress,
+        utxo[0].utxoList,
+        signInfo[0].normalFeeRate,
+        signInfo[0].inscriptionOutput,
+        `{"p":"brc-20","op":"mint","tick":${TICK_NAME},"amt":"100"}`
+      );
+      const result = await this.sendTransactionBatch(
+        fromAddress,
+        fromAddress,
+        inscribedTxs,
+        "BRC20_MINT",
+        signInfo[0].normalFeeRate
+      );
+      console.log(result);
+      return result;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  transferBRC20 = async (fromAddress, toAddress) => {
+    try {
+      const signInfo = await this.getSignInfo(fromAddress, fromAddress);
+      // txAmount for deploy BRC20 is 1 commit tx + 1 reveal tx
+      const utxo = await this.getUTXO(
+        fromAddress,
+        signInfo[0].inscriptionOutput,
+        signInfo[0].normalCost,
+        1 + 1
+      );
+      const inscribedTxs = await this.constructDeployBRC20Tx(
+        fromAddress,
+        utxo[0].utxoList,
+        signInfo[0].normalFeeRate,
+        signInfo[0].inscriptionOutput,
+        `{"p":"brc-20","op":"transfer","tick":${TICK_NAME},"amt":"100"}`
+      );
+      const result = await this.sendTransactionBatch(
+        fromAddress,
+        fromAddress,
+        inscribedTxs,
+        "BRC20_INSCRIBE",
+        signInfo[0].normalFeeRate
+      );
+      console.log(result);
+
+      const transferSignInfo = await this.getSignInfo(fromAddress, toAddress);
+      const utxoNFT = await this.getUTXONFT(fromAddress);
+      const tx = await this.constructBTCTx(fromAddress, utxoNFT[0].utxoList);
+      const wallet = this.getWallet("BTC");
+      const signedTx = await wallet.signTransaction(tx);
+      const transferResult = await this.sendTransaction(
+        fromAddress,
+        toAddress,
+        signedTx,
+        "TRANSFER",
+        transferSignInfo[0].normalFeeRate,
+        transferSignInfo[0].normalCost
+      );
+      console.log(transferResult);
+      return transferResult;
     } catch (err) {
       console.error(err);
     }

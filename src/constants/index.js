@@ -15,8 +15,11 @@ export const API_GET_TRANSACTIONS = "/api/v5/waas/transaction/get-transactions";
 export const API_GET_TRANSACTION_DETAIL =
   "/api/v5/waas/transaction/get-transaction-detail";
 
-export const API_GET_SIGN_INFO = "/api/v5/waas/transaction/get-utxo";
-export const API_GET_UTXO = "/api/v5/waas/transaction/get-sign-info";
+export const API_GET_SIGN_INFO = "/api/v5/waas/transaction/get-sign-info";
+export const API_GET_UTXO = "/api/v5/waas/transaction/get-utxo";
+export const API_GET_UTXO_NFT = "/api/v5/waas/transaction/get-utxo-nft";
+
+export const API_SEND_TRANSACTION = "/api/v5/waas/transaction/send-transaction";
 export const API_SEND_TRANSACTION_BATCH =
   "/api/v5/waas/transaction/send-transaction-batch";
 
@@ -35,3 +38,5 @@ export const BRC20_TRANSFER_PARAMS = {
   op: "transfer",
   tick: "ordi",
 };
+
+export const TICK_NAME = "okex";

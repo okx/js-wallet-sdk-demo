@@ -106,7 +106,9 @@ const GenerateMnenomicCard = () => {
         const walletInfo = {
           chainId: chainsAvailable
             ? chainsAvailable.find((chain) => chain.name === coinType)?.chainId
-            : undefined,
+            : coinType === "BTC"
+            ? 0
+            : 1,
           coinType,
           segwitType: segwitType ? segwitType.value : undefined,
           derivedPath,

@@ -20,7 +20,7 @@ const TransferBRC20Card = () => {
 
   // mobx store that link up with sdk wallets
   const { walletStore } = useStore();
-  const { isInit, chainsAvailable, walletId } = walletStore;
+  const { isInit, chainsAvailable, walletId, walletInfos } = walletStore;
 
   // local UI state cleanup when sdk re-initialized
   useEffect(() => {
@@ -31,6 +31,10 @@ const TransferBRC20Card = () => {
   const transferBRC20 = async () => {
     try {
       setErrorMessage("");
+      const address = walletInfos.find(
+        (walletInfo) => walletInfo.coinType === "BTC"
+      ).address;
+      await walletStore.transferBRC20(address, address);
     } catch (err) {
       console.error(err);
       setErrorMessage(err.toString());

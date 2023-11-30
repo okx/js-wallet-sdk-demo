@@ -20,7 +20,7 @@ const MintBRC20Card = () => {
 
   // mobx store that link up with sdk wallets
   const { walletStore } = useStore();
-  const { isInit, chainsAvailable, walletId } = walletStore;
+  const { isInit, chainsAvailable, walletId, walletInfos } = walletStore;
 
   // local UI state cleanup when sdk re-initialized
   useEffect(() => {
@@ -31,6 +31,10 @@ const MintBRC20Card = () => {
   const mintBRC20 = async () => {
     try {
       setErrorMessage("");
+      const address = walletInfos.find(
+        (walletInfo) => walletInfo.coinType === "BTC"
+      ).address;
+      await walletStore.mintBRC20(address);
     } catch (err) {
       console.error(err);
       setErrorMessage(err.toString());
