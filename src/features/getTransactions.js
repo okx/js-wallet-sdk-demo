@@ -17,6 +17,7 @@ import { useStore } from "../stores";
 const GetTransactionsCard = () => {
   // local UI state
   const [errorMessage, setErrorMessage] = useState("");
+  const [transactions, setTransactions] = useState();
 
   // mobx store that link up with sdk wallets
   const { walletStore } = useStore();
@@ -25,12 +26,16 @@ const GetTransactionsCard = () => {
   // local UI state cleanup when sdk re-initialized
   useEffect(() => {
     setErrorMessage("");
+    setTransactions();
   }, [isInit]);
 
   // feature logic
   const getTransactions = async () => {
     try {
       setErrorMessage("");
+      const data = await walletStore.getTransactions();
+      console.log(data);
+      setTransactions(data);
     } catch (err) {
       console.error(err);
       setErrorMessage(err.toString());
@@ -63,6 +68,23 @@ const GetTransactionsCard = () => {
             {errorMessage}
           </Alert>
         )}
+        {transactions ? (
+          <Alert severity="success">
+            <AlertTitle>Success</AlertTitle>
+            <strong>
+              Transactions:{" "}
+              {transactions.map((tx) => {
+                return (
+                  <p key={tx.txHash}>
+                    Transaction {tx.orderId} ({tx.txHash}) <br /> [Chain ID:{" "}
+                    {tx.chainId}]: from {tx.fromAddr} to {tx.toAddr} at{" "}
+                    {new Date(parseInt(tx.txTime, 10)).toISOString()}
+                  </p>
+                );
+              })}
+            </strong>
+          </Alert>
+        ) : null}
       </Card>
     </>
   ) : null;

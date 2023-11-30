@@ -26,6 +26,7 @@ const GetBalanceCard = () => {
   // local UI state cleanup when sdk re-initialized
   useEffect(() => {
     setErrorMessage("");
+    setBalances();
   }, [isInit]);
 
   // feature logic

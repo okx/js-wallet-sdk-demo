@@ -18,9 +18,9 @@ const GetAllChainsCard = lazy(() => import("./features/getAllChains"));
 const CreateWalletCard = lazy(() => import("./features/createWallet"));
 const GetBalanceCard = lazy(() => import("./features/getBalance"));
 const GetTransactionsCard = lazy(() => import("./features/getTransactions"));
-const GetTransactionDetailCard = lazy(() =>
-  import("./features/getTransactionDetail")
-);
+// const GetTransactionDetailCard = lazy(() =>
+//   import("./features/getTransactionDetail")
+// );
 const DeployBRC20Card = lazy(() => import("./features/deployBRC20"));
 const MintBRC20Card = lazy(() => import("./features/mintBRC20"));
 const TransferBRC20Card = lazy(() => import("./features/transferBRC20"));
@@ -72,9 +72,9 @@ export default function Dashboard() {
               <Grid item xs={12}>
                 <GetTransactionsCard />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <GetTransactionDetailCard />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <DeployBRC20Card />
               </Grid>

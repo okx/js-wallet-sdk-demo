@@ -45,6 +45,8 @@ import {
   API_GET_ALL_CHAINS,
   API_GET_ALL_COINS,
   API_GET_ASSETS,
+  API_GET_TRANSACTIONS,
+  API_GET_TRANSACTION_DETAIL,
   METHOD_GET,
   METHOD_POST,
 } from "../constants/index";
@@ -625,7 +627,6 @@ export default class WalletStore {
           return [...arr, walletInfo.chainId];
         }, []),
       };
-      console.log(body);
       const response = await fetch(url, {
         method: METHOD_POST,
         headers: headerParams(
@@ -639,7 +640,65 @@ export default class WalletStore {
       const json = await response.json();
       if (json && json.data) {
         const data = json.data;
-        console.log("balance", data);
+        return data;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  getTransactions = async () => {
+    try {
+      const walletId = this.walletId;
+      const date = new Date().toISOString();
+      const url = getRequestUrl(API_GET_TRANSACTIONS);
+      const body = {
+        walletId,
+        limit: 10,
+      };
+      const response = await fetch(url, {
+        method: METHOD_POST,
+        headers: headerParams(
+          date,
+          METHOD_POST,
+          API_GET_TRANSACTIONS,
+          JSON.stringify(body)
+        ),
+        body: JSON.stringify(body),
+      });
+      const json = await response.json();
+      if (json && json.data) {
+        const data = json.data;
+        return data;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  getTransactionDetail = async (orderId, chainId) => {
+    try {
+      const walletId = this.walletId;
+      const date = new Date().toISOString();
+      const url = getRequestUrl(API_GET_TRANSACTION_DETAIL);
+      const body = {
+        walletId,
+        orderId,
+        chainId,
+      };
+      const response = await fetch(url, {
+        method: METHOD_POST,
+        headers: headerParams(
+          date,
+          METHOD_POST,
+          API_GET_TRANSACTION_DETAIL,
+          JSON.stringify(body)
+        ),
+        body: JSON.stringify(body),
+      });
+      const json = await response.json();
+      if (json && json.data) {
+        const data = json.data;
         return data;
       }
     } catch (err) {
