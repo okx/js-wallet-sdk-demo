@@ -1074,7 +1074,7 @@ export default class WalletStore {
         signInfo[0].normalCost,
         1 + 1
       );
-      const inscribedTxs = await this.constructDeployBRC20Tx(
+      const inscribedTxs = await this.constructBRC20Tx(
         fromAddress,
         utxo[0].utxoList,
         signInfo[0].normalFeeRate,
@@ -1105,7 +1105,7 @@ export default class WalletStore {
         signInfo[0].normalCost,
         1 + 1
       );
-      const inscribedTxs = await this.constructDeployBRC20Tx(
+      const inscribedTxs = await this.constructBRC20Tx(
         fromAddress,
         utxo[0].utxoList,
         signInfo[0].normalFeeRate,
@@ -1136,7 +1136,7 @@ export default class WalletStore {
         signInfo[0].normalCost,
         1 + 1
       );
-      const inscribedTxs = await this.constructDeployBRC20Tx(
+      const inscribedTxs = await this.constructBRC20Tx(
         fromAddress,
         utxo[0].utxoList,
         signInfo[0].normalFeeRate,
