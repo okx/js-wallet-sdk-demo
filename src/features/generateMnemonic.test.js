@@ -1,11 +1,11 @@
-// create unit test for ./generateMnenomic.js
-// Path: src/features/generateMnenomic.test.js
+// create unit test for ./generateMnemonic.js
+// Path: src/features/generateMnemonic.test.js
 import "@testing-library/jest-dom";
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import { BtcWallet } from "@okxweb3/coin-bitcoin";
 
 import { useStore } from "../stores";
-import GenerateMnenomicCard from "./generateMnenomic";
+import GenerateMnemonicCard from "./generateMnemonic";
 
 const mockData = {
   walletStore: {
@@ -29,19 +29,19 @@ const mockData = {
 };
 
 jest.mock("../stores");
-describe("generateMnenomic", () => {
+describe("generateMnemonic", () => {
   it("should render the component", () => {
     useStore.mockReturnValue(mockData);
-    const { asFragment } = render(<GenerateMnenomicCard />);
+    const { asFragment } = render(<GenerateMnemonicCard />);
     expect(asFragment()).toMatchSnapshot();
   });
 
   it("should display wallet info when generate address", async () => {
     useStore.mockReturnValue(mockData);
-    render(<GenerateMnenomicCard />);
+    render(<GenerateMnemonicCard />);
 
-    const generateMnenomicButton = screen.getByTestId("generate-mnenomic");
-    fireEvent.click(generateMnenomicButton);
+    const generateMnemonicButton = screen.getByTestId("generate-mnemonic");
+    fireEvent.click(generateMnemonicButton);
 
     await screen.findByTestId("derive-address");
     const deriveAddressButton = screen.getByTestId("derive-address");

@@ -880,6 +880,7 @@ export default class WalletStore {
         inscriptionDataList,
         changeAddress: fromAddress,
       };
+      console.log(data);
       const txs = await wallet.signTransaction({ data });
       console.log(txs);
       return txs;
@@ -1071,6 +1072,7 @@ export default class WalletStore {
       const utxo = await this.getUTXO(
         fromAddress,
         signInfo[0].inscriptionOutput,
+        signInfo[0].minOutput,
         signInfo[0].normalCost,
         1 + 1
       );
@@ -1102,6 +1104,7 @@ export default class WalletStore {
       const utxo = await this.getUTXO(
         fromAddress,
         signInfo[0].inscriptionOutput,
+        signInfo[0].minOutput,
         signInfo[0].normalCost,
         1 + 1
       );
@@ -1133,6 +1136,7 @@ export default class WalletStore {
       const utxo = await this.getUTXO(
         fromAddress,
         signInfo[0].inscriptionOutput,
+        signInfo[0].minOutput,
         signInfo[0].normalCost,
         1 + 1
       );

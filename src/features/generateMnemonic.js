@@ -23,12 +23,12 @@ import DemoWalletInfo from "../components/DemoWalletInfo";
 import { useStore } from "../stores";
 
 // card per feature
-const GenerateMnenomicCard = () => {
+const GenerateMnemonicCard = () => {
   // local UI state
   const [coinType, setCoinType] = useState();
   const [network, setNetwork] = useState();
   const [segwitType, setSegwitType] = useState();
-  const [mnenomic, setMnenomic] = useState();
+  const [mnemonic, setMnemonic] = useState();
   const [errorMessage, setErrorMessage] = useState("");
   const [showDialog, setShowDialog] = useState(false);
 
@@ -39,7 +39,7 @@ const GenerateMnenomicCard = () => {
   // local UI state cleanup when sdk re-initialized
   useEffect(() => {
     setCoinType();
-    setMnenomic();
+    setMnemonic();
     setErrorMessage("");
     setShowDialog(false);
   }, [isInit]);
@@ -48,17 +48,17 @@ const GenerateMnenomicCard = () => {
   const handleDialogClose = () => {
     setShowDialog(false);
   };
-  const contentCopy = (mnenomic, appStore) => {
-    navigator.clipboard.writeText(mnenomic);
+  const contentCopy = (mnemonic, appStore) => {
+    navigator.clipboard.writeText(mnemonic);
     appStore.snackBarMessage = "Copied to clipboard";
     appStore.openSnackBar = true;
   };
 
   // feature logic
-  const generateMnenomic = async () => {
+  const generateMnemonic = async () => {
     try {
       const result = await bip39.generateMnemonic();
-      setMnenomic(result);
+      setMnemonic(result);
     } catch (err) {
       console.error(err);
     }
@@ -90,7 +90,7 @@ const GenerateMnenomicCard = () => {
         }
         const derivedPath = await wallet.getDerivedPath(derivePathParams);
         const privateKey = await wallet.getDerivedPrivateKey({
-          mnenomic,
+          mnemonic,
           hdPath: derivedPath,
         });
         const newAddressParams = { privateKey };
@@ -138,14 +138,14 @@ const GenerateMnenomicCard = () => {
       <Card
         variant="outlined"
         sx={{ minWidth: 275, borderRadius: 5 }}
-        key="generate-mnenomic-card"
+        key="generate-mnemonic-card"
       >
         <CardContent sx={{ pb: 1 }}>
-          <Typography sx={{ fontSize: 26 }}>Generate Mnenomic</Typography>
+          <Typography sx={{ fontSize: 26 }}>Generate Mnemonic</Typography>
         </CardContent>
         <Divider flexItem />
         <CardContent sx={{ pb: 0 }}>
-          <Typography sx={{ fontSize: 20, pb: 1 }}>Mnenomic</Typography>
+          <Typography sx={{ fontSize: 20, pb: 1 }}>Mnemonic</Typography>
         </CardContent>
         <CardContent
           sx={{
@@ -157,14 +157,14 @@ const GenerateMnenomicCard = () => {
         >
           <Grid container spacing={2} alignItems="center">
             <Grid item xs>
-              {mnenomic ? (
+              {mnemonic ? (
                 <Typography
                   sx={{
                     minHeight: 24,
                     fontSize: 16,
                   }}
                 >
-                  {mnenomic}
+                  {mnemonic}
                 </Typography>
               ) : (
                 <Typography
@@ -174,13 +174,13 @@ const GenerateMnenomicCard = () => {
                     color: "#929292",
                   }}
                 >
-                  {`Click "Generate Mnenomic" to randomly generate mnenomic`}
+                  {`Click "Generate Mnemonic" to randomly generate mnemonic`}
                 </Typography>
               )}
             </Grid>
             <Grid item>
-              {mnenomic ? (
-                <IconButton onClick={() => contentCopy(mnenomic, appStore)}>
+              {mnemonic ? (
+                <IconButton onClick={() => contentCopy(mnemonic, appStore)}>
                   <ContentCopyIcon />
                 </IconButton>
               ) : null}
@@ -189,13 +189,13 @@ const GenerateMnenomicCard = () => {
         </CardContent>
         <CardActions sx={{ p: 2 }}>
           <CardActionButton
-            buttonText="Generate Mnenomic"
-            onClick={generateMnenomic}
-            disabled={!isInit || !!mnenomic}
-            testId="generate-mnenomic"
+            buttonText="Generate Mnemonic"
+            onClick={generateMnemonic}
+            disabled={!isInit || !!mnemonic}
+            testId="generate-mnemonic"
           />
         </CardActions>
-        {!!mnenomic && (
+        {!!mnemonic && (
           <>
             <CardContent sx={{ pb: 0 }}>
               <Typography sx={{ fontSize: 20 }}>Coin Type</Typography>
@@ -212,7 +212,7 @@ const GenerateMnenomicCard = () => {
               <CardActionButton
                 buttonText="Derive Address"
                 onClick={generatePrivateKey}
-                disabled={!isInit || !mnenomic || !coinType}
+                disabled={!isInit || !mnemonic || !coinType}
                 testId="derive-address"
               />
             </CardActions>
@@ -247,4 +247,4 @@ const GenerateMnenomicCard = () => {
   ) : null;
 };
 
-export default observer(GenerateMnenomicCard);
+export default observer(GenerateMnemonicCard);

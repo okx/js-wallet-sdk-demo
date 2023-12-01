@@ -31,7 +31,8 @@ const overrideDevServer = (configFunction) => {
       "/api/v5/waas": okxProxy,
     };
     console.log(newProxy);
-    const config = configFunction(proxy, allowedHost);
+    const newAllowedHost = "localhost";
+    const config = configFunction(newProxy, newAllowedHost);
     config.host = "localhost";
     console.log(config);
     return config;

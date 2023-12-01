@@ -12,7 +12,7 @@ const InitSDKCard = lazy(() => import("./features/initSDK"));
 // const GeneratePrivateKeyCard = lazy(() =>
 //   import("./features/generatePrivateKey")
 // );
-const GenerateMnenomicCard = lazy(() => import("./features/generateMnenomic"));
+const GenerateMnemonicCard = lazy(() => import("./features/generateMnemonic"));
 const GetAllChainsCard = lazy(() => import("./features/getAllChains"));
 // const GetAllCoinsCard = lazy(() => import("./features/getAllCoins"));
 const CreateWalletCard = lazy(() => import("./features/createWallet"));
@@ -51,17 +51,17 @@ export default function Dashboard() {
               <Grid item xs={12}>
                 <InitSDKCard />
               </Grid>
-              {/* <Grid item xs={12}>
-                <GeneratePrivateKeyCard />
-              </Grid> */}
               <Grid item xs={12}>
                 <GetAllChainsCard />
               </Grid>
               {/* <Grid item xs={12}>
                 <GetAllCoinsCard />
               </Grid> */}
+              {/* <Grid item xs={12}>
+                <GeneratePrivateKeyCard />
+              </Grid> */}
               <Grid item xs={12}>
-                <GenerateMnenomicCard />
+                <GenerateMnemonicCard />
               </Grid>
               <Grid item xs={12}>
                 <CreateWalletCard />
