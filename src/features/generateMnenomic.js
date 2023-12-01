@@ -92,7 +92,7 @@ const GenerateMnenomicCard = () => {
         }
         const derivedPath = await wallet.getDerivedPath(derivePathParams);
         const privateKey = await wallet.getDerivedPrivateKey({
-          mnenomic,
+          mnemonic: mnenomic,
           hdPath: derivedPath,
         });
         const newAddressParams = { privateKey };
